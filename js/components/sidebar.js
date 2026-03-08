@@ -120,7 +120,26 @@ const Sidebar = {
                 const pageId = item.dataset.page;
                 Router.goTo(pageId);
                 this.setActiveItem(pageId);
+                
+                // Close sidebar on mobile
+                if (window.innerWidth <= 1024) {
+                    const sidebar = document.querySelector('.sidebar');
+                    if (sidebar) sidebar.classList.remove('open');
+                }
             });
+        });
+
+        // Close when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 1024) {
+                const sidebar = document.querySelector('.sidebar');
+                const menuBtn = document.getElementById('mobile-menu-btn');
+                if (sidebar && sidebar.classList.contains('open')) {
+                    if (!sidebar.contains(e.target) && (!menuBtn || !menuBtn.contains(e.target))) {
+                        sidebar.classList.remove('open');
+                    }
+                }
+            }
         });
 
         // Logout button

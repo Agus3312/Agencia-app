@@ -373,9 +373,20 @@ window.ProjectDetailPage = {
         const input = document.getElementById('chat-input');
         const text = input?.value.trim();
         if (!text) return;
-        await ProjectService.addMessage(this.projectId, text);
+        
         input.value = '';
-        await this.loadTab('chat');
+        input.disabled = true;
+        
+        try {
+            await ProjectService.addMessage(this.projectId, text);
+            // The WS event 'new_message' will append the new message to the screen for all users, including the sender!
+        } catch (err) {
+            console.error('Error sending message', err);
+            Toast.error('No se pudo enviar el mensaje');
+        } finally {
+            input.disabled = false;
+            input.focus();
+        }
     },
 
     scrollChat() {
