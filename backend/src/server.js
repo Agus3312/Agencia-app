@@ -29,7 +29,12 @@ app.use('/api/teams', require('./routes/teams'));
 
 // ── Health check ────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+    res.json({ 
+        status: 'ok', 
+        timestamp: new Date().toISOString(),
+        hasDbUrl: !!process.env.DATABASE_URL,
+        envKeys: Object.keys(process.env)
+    });
 });
 
 // ── Error handler ───────────────────────────────────────────────────
