@@ -154,37 +154,3 @@
         </div>
     </div>
 </div>
-
-<script>
-// Form submission handler
-document.getElementById('create-project-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const projectName = document.getElementById('project-name').value;
-    const projectDesc = document.getElementById('project-desc').value;
-    const projectLeader = document.getElementById('project-leader').value;
-    const projectDeadline = document.getElementById('project-deadline').value;
-    const priority = document.querySelector('input[name="priority"]:checked').value;
-    
-    // Validate inputs
-    if (!projectName || !projectDesc || !projectLeader || !projectDeadline) {
-        alert('Por favor, completa todos los campos obligatorios');
-        return;
-    }
-    
-    // Log form data (in a real app, send to server)
-    console.log({
-        name: projectName,
-        description: projectDesc,
-        leader: projectLeader,
-        deadline: projectDeadline,
-        priority: priority
-    });
-    
-    // Show success message
-    alert('¡Proyecto creado exitosamente!');
-    
-    // Redirect to projects page
-    Router.goTo('dashboard');
-});
-</script>

@@ -35,6 +35,50 @@ router.post('/register', async (req, res, next) => {
             }
         });
 
+        // Auto-assign new user to active projects that are relevant to their team
+        try {
+            // Find other users in the same team
+            const teamMembers = await prisma.user.findMany({
+                where: { team: user.team, id: { not: user.id } },
+                select: { id: true }
+            });
+            const teamMemberIds = teamMembers.map(m => m.id);
+
+            if (teamMemberIds.length > 0) {
+                // Find active projects those teammates are on
+                const activeProjects = await prisma.project.findMany({
+                    where: {
+                        status: { not: 'completed' },
+                        members: {
+                            some: {
+                                id: { in: teamMemberIds }
+                            }
+                        }
+                    },
+                    select: { id: true }
+                });
+
+                if (activeProjects.length > 0) {
+                    // Prepare array of project-user associations
+                    const updatePromises = activeProjects.map(p => 
+                        prisma.project.update({
+                            where: { id: p.id },
+                            data: {
+                                members: {
+                                    connect: { id: user.id }
+                                }
+                            }
+                        })
+                    );
+                    await Promise.all(updatePromises);
+                    console.log(`Auto-added new user ${user.name} to ${activeProjects.length} active projects.`);
+                }
+            }
+        } catch (syncError) {
+            console.error('Error auto-syncing new user to projects:', syncError);
+            // Non-fatal, let registration succeed
+        }
+
         // Generate JWT
         const token = jwt.sign(
             { userId: user.id, role: user.role },

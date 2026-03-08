@@ -44,6 +44,43 @@ router.patch('/:id', adminOnly, async (req, res, next) => {
             }
         });
 
+        // If the team changed, we should auto-assign them to active projects for the new team
+        if (team !== undefined) {
+            try {
+                const teamMembers = await prisma.user.findMany({
+                    where: { team: user.team, id: { not: user.id } },
+                    select: { id: true }
+                });
+                const teamMemberIds = teamMembers.map(m => m.id);
+
+                if (teamMemberIds.length > 0) {
+                    const activeProjects = await prisma.project.findMany({
+                        where: {
+                            status: { not: 'completed' },
+                            members: {
+                                some: { id: { in: teamMemberIds } }
+                            }
+                        },
+                        select: { id: true }
+                    });
+
+                    if (activeProjects.length > 0) {
+                        const updatePromises = activeProjects.map(p => 
+                            prisma.project.update({
+                                where: { id: p.id },
+                                data: {
+                                    members: { connect: { id: user.id } }
+                                }
+                            })
+                        );
+                        await Promise.all(updatePromises);
+                    }
+                }
+            } catch (err) {
+                console.error('Error auto-syncing updated user to projects:', err);
+            }
+        }
+
         res.json(user);
     } catch (err) {
         next(err);

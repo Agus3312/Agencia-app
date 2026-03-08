@@ -47,20 +47,12 @@ const Header = {
                     <span class="notification-badge"></span>
                 </button>
                 <div style="width: 1px; height: 1.5rem; background: #e2e8f0; dark:background: var(--border-dark); margin: 0 0.5rem;"></div>
-                <button class="primary-button" id="create-btn">
-                    <span class="material-symbols-outlined">add</span>
-                    <span>Crear Nuevo</span>
-                </button>
             </div>
         `;
 
         container.appendChild(header);
 
         // Check permissions via AuthService
-        if (!AuthService.isAdmin()) {
-            const createBtn = header.querySelector('#create-btn');
-            if (createBtn) createBtn.style.display = 'none';
-        }
     },
 
     attachEventListeners() {
@@ -84,15 +76,11 @@ const Header = {
         // Mobile Menu Toggle
         const mobileMenuBtn = container.querySelector('#mobile-menu-btn');
         if (mobileMenuBtn) {
-            mobileMenuBtn.addEventListener('click', () => {
+            mobileMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Avoid triggering document click
                 const sidebar = document.querySelector('.sidebar');
                 if (sidebar) sidebar.classList.toggle('open');
             });
-        }
-
-        const createBtn = document.getElementById('create-btn');
-        if (createBtn) {
-            createBtn.addEventListener('click', this.handleCreate.bind(this));
         }
     },
 
@@ -118,24 +106,11 @@ const Header = {
         }
 
         console.log('Searching for:', query);
-        // Implement search functionality here
-        // This could filter data or navigate to a search results page
+        Toast.info('Búsqueda en desarrollo');
     },
 
     handleNotifications() {
         Toast.info('No hay notificaciones nuevas');
-    },
-
-    handleCreate() {
-        const currentPage = window.location.hash.substring(1) || 'dashboard';
-
-        // Navigate based on current page
-        if (currentPage === 'projects' || currentPage === 'dashboard' || currentPage === 'admin') {
-            Router.goTo('project-create');
-        } else {
-            Toast.info(`Crear nuevo elemento en: ${currentPage}`);
-        }
-        // Implement create modal here based on current page
     }
 };
 
