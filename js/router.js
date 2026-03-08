@@ -255,6 +255,18 @@ const Router = {
             });
         }
 
+        if (pageId === 'project-create') {
+            this.loadService('js/services/ProjectService.js', 'ProjectService', () => {
+                this.loadService('js/services/TeamService.js', 'TeamService', () => {
+                    this.loadControllerWithCallback('js/pages/project-create.js', 'ProjectCreatePage', () => {
+                        if (window.ProjectCreatePage) {
+                            window.ProjectCreatePage.init();
+                        }
+                    });
+                });
+            });
+        }
+
         if (pageId === 'project-detail') {
             this.loadService('js/services/ProjectService.js', 'ProjectService', () => {
                 this.loadControllerWithCallback('js/pages/project-detail.js', 'ProjectDetailPage', () => {

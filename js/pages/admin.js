@@ -201,14 +201,9 @@ window.AdminPage = {
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-1.5">Equipo *</label>
-                            <select id="new-team" required
-                                class="w-full bg-slate-50 dark:bg-black/20 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all">
-                                <option value="">Seleccionar equipo...</option>
-                                <option>Frontend</option>
-                                <option>Backend</option>
-                                <option>Design</option>
-                                <option>Management</option>
-                            </select>
+                            <input type="text" id="new-team" required placeholder="Ej. Marketing Digital, Frontend..."
+                                class="w-full bg-slate-50 dark:bg-black/20 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all"/>
+                            <p class="text-xs text-slate-400 mt-1">Escribá el nombre del equipo libremente (Ej. Frontend, Marketing Digital)</p>
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-1.5">Tags <span class="text-xs font-normal text-slate-400">(separados por comas)</span></label>
@@ -233,36 +228,56 @@ window.AdminPage = {
         `;
     },
 
-    submitCreateUser(e) {
+    async submitCreateUser(e) {
         e.preventDefault();
         const name = document.getElementById('new-name').value.trim();
         const email = document.getElementById('new-email').value.trim();
         const role = document.getElementById('new-role').value.trim();
-        const team = document.getElementById('new-team').value;
+        const team = document.getElementById('new-team').value.trim();
         const tagsRaw = document.getElementById('new-tags').value;
         const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+        
+        const submitBtn = document.querySelector('#admin-create-form button[type="submit"]');
+        if (submitBtn) submitBtn.disabled = true;
 
-        TeamService.add({ name, email, role, team, tags, status: 'online' });
+        try {
+            await TeamService.add({ name, email, role, team, tags, status: 'online' });
 
-        const msg = document.getElementById('admin-create-msg');
-        msg.className = 'flex items-center gap-2 p-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg text-sm text-emerald-700 dark:text-emerald-400';
-        msg.innerHTML = '<span class="material-symbols-outlined text-base">check_circle</span> Usuario <strong>' + name + '</strong> creado exitosamente.';
-        document.getElementById('admin-create-form').reset();
+            const msg = document.getElementById('admin-create-msg');
+            msg.className = 'flex items-center gap-2 p-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg text-sm text-emerald-700 dark:text-emerald-400';
+            msg.innerHTML = '<span class="material-symbols-outlined text-base">check_circle</span> Usuario <strong>' + name + '</strong> creado exitosamente.';
+            document.getElementById('admin-create-form').reset();
+            
+            // Refresh user list tab
+            setTimeout(() => this.loadTab('users'), 1000);
+        } catch(err) {
+            console.error('Error creating user:', err);
+            const msg = document.getElementById('admin-create-msg');
+            msg.className = 'flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-700 dark:text-red-400';
+            msg.innerHTML = '<span class="material-symbols-outlined text-base">error</span> ' + (err.message || 'Error al crear usuario');
+        } finally {
+            if (submitBtn) submitBtn.disabled = false;
+        }
     },
 
     // ─── TAB: Log de Actividad ──────────────────────────────────────────────
-    renderActivity() {
-        const log = StorageAdapter.get('activity_log', []);
-        const actionColors = { add: 'emerald', update: 'blue', delete: 'red' };
-        const actionIcons = { add: 'person_add', update: 'edit', delete: 'person_remove' };
-        const actionLabels = { add: 'Creación', update: 'Edición', delete: 'Eliminación' };
+    async renderActivity() {
+        const actionColors = { project_created: 'blue', user_created: 'emerald', user_deleted: 'red', user_updated: 'amber' };
+        const actionIcons  = { project_created: 'folder_open', user_created: 'person_add', user_deleted: 'person_remove', user_updated: 'edit' };
+
+        let log = [];
+        try {
+            log = await ApiAdapter.get('/api/activity?limit=30');
+        } catch(e) {
+            log = StorageAdapter.get('activity_log', []);
+        }
 
         if (log.length === 0) {
             return `
                 <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-16 text-center">
                     <span class="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600 block mb-3">history</span>
                     <h3 class="font-semibold text-slate-500 dark:text-slate-400">Sin actividad registrada</h3>
-                    <p class="text-sm text-slate-400 mt-1">Las acciones de agregar, editar o eliminar miembros aparecerán aquí.</p>
+                    <p class="text-sm text-slate-400 mt-1">Las acciones de crear proyectos y gestionar usuarios aparecerán aquí.</p>
                 </div>`;
         }
 
@@ -270,20 +285,13 @@ window.AdminPage = {
             <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
                     <h3 class="font-bold text-lg">Historial de Actividad</h3>
-                    <div class="flex items-center gap-3">
-                        <span class="text-xs text-slate-400">${log.length} eventos registrados</span>
-                        <button onclick="if(confirm('¿Borrar todo el historial?')){StorageAdapter.remove('activity_log');AdminPage.loadTab('activity');}"
-                            class="text-xs px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-800 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 font-semibold transition-colors">
-                            Limpiar todo
-                        </button>
-                    </div>
+                    <span class="text-xs text-slate-400">${log.length} eventos registrados</span>
                 </div>
                 <div class="divide-y divide-slate-100 dark:divide-slate-800">
                     ${log.map(entry => {
             const color = actionColors[entry.action] || 'slate';
-            const icon = actionIcons[entry.action] || 'info';
-            const label = actionLabels[entry.action] || entry.action;
-            const date = new Date(entry.timestamp);
+            const icon  = actionIcons[entry.action] || 'info';
+            const date  = new Date(entry.timestamp);
             const formatted = date.toLocaleString('es-AR', {
                 day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
             });
@@ -296,13 +304,10 @@ window.AdminPage = {
                                     <p class="text-sm text-slate-700 dark:text-slate-300">
                                         <span class="font-semibold">${entry.by}</span>
                                         ${entry.label}
-                                        <span class="font-semibold">${entry.memberName}</span>
+                                        <span class="font-semibold">${entry.entityName}</span>
                                     </p>
                                     <p class="text-xs text-slate-400 mt-0.5">${formatted}</p>
                                 </div>
-                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-${color}-50 dark:bg-${color}-900/20 text-${color}-600 dark:text-${color}-400 flex-shrink-0">
-                                    ${label}
-                                </span>
                             </div>
                         `;
         }).join('')}
