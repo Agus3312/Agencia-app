@@ -25,6 +25,9 @@ const Header = {
 
         const header = Helpers.createElement('header', 'header');
         header.innerHTML = `
+            <button class="icon-button lg:hidden mr-2" id="mobile-menu-btn" title="Menú">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
             <div class="search-box">
                 <span class="search-icon material-symbols-outlined">search</span>
                 <input 
@@ -76,6 +79,15 @@ const Header = {
         const notificationsBtn = document.getElementById('notifications-btn');
         if (notificationsBtn) {
             notificationsBtn.addEventListener('click', this.handleNotifications.bind(this));
+        }
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = container.querySelector('#mobile-menu-btn');
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                const sidebar = document.querySelector('.sidebar');
+                if (sidebar) sidebar.classList.toggle('open');
+            });
         }
 
         const createBtn = document.getElementById('create-btn');

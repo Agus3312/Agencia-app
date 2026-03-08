@@ -11,6 +11,11 @@ const ApiAdapter = {
     // Base URL — points to deployed backend on Railway
     BASE_URL: 'https://agencia-app-production.up.railway.app',
     TOKEN_KEY: 'auth_token',
+    _cache: {},
+
+    clearCache() {
+        this._cache = {};
+    },
 
     /**
      * Get stored JWT token
@@ -67,12 +72,19 @@ const ApiAdapter = {
     /**
      * GET request
      */
-    async get(path) {
+    async get(path, forceRefresh = false) {
+        if (!forceRefresh && this._cache[path]) {
+            return this._cache[path];
+        }
+
         const res = await fetch(this.BASE_URL + path, {
             method: 'GET',
             headers: this._headers()
         });
-        return this._handleResponse(res);
+        
+        const data = await this._handleResponse(res);
+        this._cache[path] = data; // Guardar en caché
+        return data;
     },
 
     /**
@@ -84,6 +96,7 @@ const ApiAdapter = {
             headers: this._headers(),
             body: JSON.stringify(body)
         });
+        this.clearCache(); // Invalidar caché en mutaciones
         return this._handleResponse(res);
     },
 
@@ -96,6 +109,7 @@ const ApiAdapter = {
             headers: this._headers(),
             body: JSON.stringify(body)
         });
+        this.clearCache(); // Invalidar caché
         return this._handleResponse(res);
     },
 
@@ -107,6 +121,7 @@ const ApiAdapter = {
             method: 'DELETE',
             headers: this._headers()
         });
+        this.clearCache(); // Invalidar caché
         return this._handleResponse(res);
     }
 };
