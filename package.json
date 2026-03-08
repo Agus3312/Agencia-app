@@ -1,0 +1,12 @@
+{
+  "name": "agencia-app-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "postinstall": "cd backend && npm install",
+    "start": "cd backend && npm start"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
