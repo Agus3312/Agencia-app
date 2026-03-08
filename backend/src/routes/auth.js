@@ -38,7 +38,7 @@ router.post('/register', async (req, res, next) => {
         // Generate JWT
         const token = jwt.sign(
             { userId: user.id, role: user.role },
-            process.env.JWT_SECRET,
+            process.env.JWT_SECRET || 'la_clave_secreta_app_2026',
             { expiresIn: '7d' }
         );
 
@@ -88,7 +88,7 @@ router.post('/login', async (req, res, next) => {
         // Generate JWT
         const token = jwt.sign(
             { userId: user.id, role: user.role },
-            process.env.JWT_SECRET,
+            process.env.JWT_SECRET || 'la_clave_secreta_app_2026',
             { expiresIn: '7d' }
         );
 

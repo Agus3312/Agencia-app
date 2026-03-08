@@ -15,7 +15,7 @@ function authMiddleware(req, res, next) {
     const token = header.split(' ')[1];
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'la_clave_secreta_app_2026');
         req.userId = decoded.userId;
         req.userRole = decoded.role;
         next();
