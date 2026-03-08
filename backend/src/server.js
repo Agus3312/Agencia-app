@@ -41,3 +41,5 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log(`  📊 API:       http://localhost:${PORT}/api/health`);
     console.log(`  🌐 Frontend:  http://localhost:${PORT}\n`);
 });
+
+// trigger redeploy
