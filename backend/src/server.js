@@ -8,7 +8,10 @@ const PORT = process.env.PORT || 3001;
 
 // ── Middleware ───────────────────────────────────────────────────────
 app.use(cors({
-    origin: '*', // En producción: URL del frontend
+    origin: function(origin, callback) {
+        // Permitir cualquier origen (para desarrollo/pruebas)
+        callback(null, true);
+    },
     credentials: true
 }));
 app.use(express.json());
