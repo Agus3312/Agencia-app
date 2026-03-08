@@ -1,6 +1,7 @@
 const express = require('express');
 const prisma = require('../lib/prisma');
 const { authMiddleware, adminOnly } = require('../middleware/auth');
+const { logActivity } = require('./activity');
 
 const router = express.Router();
 
@@ -153,6 +154,7 @@ router.post('/', adminOnly, async (req, res, next) => {
             }
         });
 
+        await logActivity(req.userId, 'project_created', 'creó el proyecto', project.name);
         res.status(201).json(project);
     } catch (err) {
         next(err);

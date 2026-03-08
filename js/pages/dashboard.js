@@ -22,8 +22,15 @@ window.DashboardPage = {
         const userName = AuthService.getUserName().split(' ')[0];
         // Fetch projects from API
         const projects = window.ProjectService ? await ProjectService.fetchAll() : [];
-        const members = window.TeamService ? TeamService.getAll() : [];
-        const activityLog = StorageAdapter.get('activity_log', []).slice(0, 5);
+        const members = window.TeamService ? await TeamService.fetchAll() : [];
+        
+        // Fetch activity log from API
+        let activityLog = [];
+        try {
+            activityLog = await ApiAdapter.get('/api/activity?limit=5');
+        } catch(e) {
+            activityLog = StorageAdapter.get('activity_log', []).slice(0, 5); // Fallback
+        }
 
         // Collect all tasks assigned to current user (or all tasks as fallback)
         const myTasks = this._getMyTasks(projects);

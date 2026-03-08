@@ -25,6 +25,7 @@ model User {
   messages       Message[]
   files          File[]
   updates        Update[]
+  activityLogs   ActivityLog[]   @relation("ActivityPerformedBy")
 }
 
 // ── Projects ───────────────────────────────────────────
@@ -102,5 +103,16 @@ model Update {
   projectId   String
   author      User     @relation(fields: [authorId], references: [id])
   authorId    String
+  createdAt   DateTime @default(now())
+}
+
+// ── Activity Log ───────────────────────────────────────
+model ActivityLog {
+  id          String   @id @default(cuid())
+  action      String   // 'project_created', 'project_deleted', 'user_created', 'user_deleted', 'user_updated'
+  label       String   // human readable description
+  entityName  String   // name of the entity being acted on
+  performedBy User     @relation("ActivityPerformedBy", fields: [userId], references: [id])
+  userId      String
   createdAt   DateTime @default(now())
 }

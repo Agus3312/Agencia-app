@@ -1,6 +1,7 @@
 const express = require('express');
 const prisma = require('../lib/prisma');
 const { authMiddleware, adminOnly } = require('../middleware/auth');
+const { logActivity } = require('./activity');
 
 const router = express.Router();
 
@@ -58,7 +59,7 @@ router.patch('/:id', adminOnly, async (req, res, next) => {
                         where: {
                             status: { not: 'completed' },
                             members: {
-                                some: { id: { in: teamMemberIds } }
+                                some: { userId: { in: teamMemberIds } }
                             }
                         },
                         select: { id: true }
@@ -66,11 +67,10 @@ router.patch('/:id', adminOnly, async (req, res, next) => {
 
                     if (activeProjects.length > 0) {
                         const updatePromises = activeProjects.map(p => 
-                            prisma.project.update({
-                                where: { id: p.id },
-                                data: {
-                                    members: { connect: { id: user.id } }
-                                }
+                            prisma.projectMember.upsert({
+                                where: { projectId_userId: { projectId: p.id, userId: user.id } },
+                                create: { projectId: p.id, userId: user.id, role: 'member' },
+                                update: {}
                             })
                         );
                         await Promise.all(updatePromises);
@@ -90,7 +90,11 @@ router.patch('/:id', adminOnly, async (req, res, next) => {
 // ── DELETE /api/teams/:id ───────────────────────────────────────────
 router.delete('/:id', adminOnly, async (req, res, next) => {
     try {
+        const user = await prisma.user.findUnique({ where: { id: req.params.id }, select: { name: true } });
         await prisma.user.delete({ where: { id: req.params.id } });
+        if (user) {
+            await logActivity(req.userId, 'user_deleted', 'eliminó al usuario', user.name);
+        }
         res.json({ success: true });
     } catch (err) {
         next(err);

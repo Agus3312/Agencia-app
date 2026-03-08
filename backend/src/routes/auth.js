@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const prisma = require('../lib/prisma');
 const { authMiddleware } = require('../middleware/auth');
+const { logActivity } = require('./activity');
 
 const router = express.Router();
 
@@ -45,13 +46,13 @@ router.post('/register', async (req, res, next) => {
             const teamMemberIds = teamMembers.map(m => m.id);
 
             if (teamMemberIds.length > 0) {
-                // Find active projects those teammates are on
+                // Find active projects those teammates are on using the join table
                 const activeProjects = await prisma.project.findMany({
                     where: {
                         status: { not: 'completed' },
                         members: {
                             some: {
-                                id: { in: teamMemberIds }
+                                userId: { in: teamMemberIds }
                             }
                         }
                     },
@@ -61,13 +62,10 @@ router.post('/register', async (req, res, next) => {
                 if (activeProjects.length > 0) {
                     // Prepare array of project-user associations
                     const updatePromises = activeProjects.map(p => 
-                        prisma.project.update({
-                            where: { id: p.id },
-                            data: {
-                                members: {
-                                    connect: { id: user.id }
-                                }
-                            }
+                        prisma.projectMember.upsert({
+                            where: { projectId_userId: { projectId: p.id, userId: user.id } },
+                            create: { projectId: p.id, userId: user.id, role: 'member' },
+                            update: {}
                         })
                     );
                     await Promise.all(updatePromises);
@@ -85,6 +83,9 @@ router.post('/register', async (req, res, next) => {
             process.env.JWT_SECRET || 'la_clave_secreta_app_2026',
             { expiresIn: '7d' }
         );
+
+        // Log activity
+        await logActivity(user.id, 'user_created', 'fue agregado al sistema', user.name);
 
         res.status(201).json({
             token,

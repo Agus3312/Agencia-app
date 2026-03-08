@@ -60,7 +60,7 @@ window.ProjectCreatePage = {
                 memberIds: leaderId ? [leaderId] : []
             };
 
-            await ProjectService.create(projectData);
+            await ProjectService.add(projectData);
             Toast.success('Proyecto creado con éxito');
             Router.goTo('projects');
         } catch (error) {
