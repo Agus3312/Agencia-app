@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "postinstall": "cd backend && npm install",
-    "start": "cd backend && npm start"
+    "build": "cd backend && npx prisma generate",
+    "start": "cd backend && node src/server.js"
   },
   "engines": {
     "node": ">=18.0.0"

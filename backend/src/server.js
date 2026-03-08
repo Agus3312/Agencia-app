@@ -36,7 +36,7 @@ app.get('/api/health', (req, res) => {
 app.use(require('./middleware/errorHandler'));
 
 // ── Start ───────────────────────────────────────────────────────────
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`\n  🚀 Backend corriendo en http://localhost:${PORT}`);
     console.log(`  📊 API:       http://localhost:${PORT}/api/health`);
     console.log(`  🌐 Frontend:  http://localhost:${PORT}\n`);
