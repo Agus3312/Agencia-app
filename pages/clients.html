@@ -1,0 +1,117 @@
+<!-- Clients Management Page -->
+<div class="animate-fade-in">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-800 dark:text-white">Gestión de Clientes</h1>
+            <p class="text-slate-500 dark:text-slate-400 text-sm">Administra la base de clientes de la agencia y sus proyectos asociados.</p>
+        </div>
+        <button onclick="ClientsPage.openCreateModal()" 
+            class="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-primary/20">
+            <span class="material-symbols-outlined text-sm">add</span>
+            Nuevo Cliente
+        </button>
+    </div>
+
+    <!-- Filters & Search -->
+    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 mb-6 flex flex-col md:flex-row gap-4 items-center">
+        <div class="relative flex-1 w-full">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+            <input type="text" id="client-search" placeholder="Buscar por nombre o empresa..." 
+                oninput="ClientsPage.handleSearch(this.value)"
+                class="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/40 transition-all">
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-2">Vista:</span>
+            <div class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+                <button onclick="ClientsPage.setView('grid')" id="btn-view-grid" class="p-1 px-2 rounded-md bg-white dark:bg-slate-700 shadow-sm text-primary">
+                    <span class="material-symbols-outlined text-sm">grid_view</span>
+                </button>
+                <button onclick="ClientsPage.setView('list')" id="btn-view-list" class="p-1 px-2 rounded-md text-slate-400 hover:bg-white dark:hover:bg-slate-700 transition-all">
+                    <span class="material-symbols-outlined text-sm">list</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clients Grid/List Container -->
+    <div id="clients-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Skeleton loading -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 animate-pulse">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800"></div>
+                <div class="flex-1">
+                    <div class="h-4 bg-slate-100 dark:bg-slate-800 rounded w-3/4 mb-2"></div>
+                    <div class="h-3 bg-slate-100 dark:bg-slate-800 rounded w-1/2"></div>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <div class="h-3 bg-slate-100 dark:bg-slate-800 rounded w-full"></div>
+                <div class="h-3 bg-slate-100 dark:bg-slate-800 rounded w-5/6"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State (Hidden) -->
+    <div id="clients-empty" class="hidden flex-col items-center justify-center py-20 bg-white dark:bg-slate-900 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
+        <div class="w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-4xl text-slate-300">group_off</span>
+        </div>
+        <h3 class="text-lg font-bold text-slate-700 dark:text-slate-200">No hay clientes aún</h3>
+        <p class="text-slate-400 text-sm max-w-xs text-center mt-1">Empieza agregando tu primer cliente para asignarle proyectos.</p>
+        <button onclick="ClientsPage.openCreateModal()" class="mt-6 px-4 py-2 bg-primary/10 text-primary rounded-xl font-bold hover:bg-primary hover:text-white transition-all">
+            Agregar Cliente
+        </button>
+    </div>
+</div>
+
+<!-- Modal para Crear/Editar Cliente (Se inyecta por el controlador) -->
+<div id="client-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/40 p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-scale-in">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 id="client-modal-title" class="text-xl font-bold">Nuevo Cliente</h3>
+                <button onclick="ClientsPage.closeModal()" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <span class="material-symbols-outlined text-sm">close</span>
+                </button>
+            </div>
+            
+            <form id="client-form" onsubmit="ClientsPage.handleSubmit(event)" class="space-y-4">
+                <input type="hidden" id="client-id">
+                
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Nombre Completo *</label>
+                    <input type="text" id="client-name" required placeholder="Ej: Juan Pérez" 
+                        class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/40 transition-all">
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Empresa / Marca</label>
+                    <input type="text" id="client-company" placeholder="Ej: Acme Corp" 
+                        class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/40 transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Email de contacto</label>
+                    <input type="email" id="client-email" placeholder="cliente@empresa.com" 
+                        class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/40 transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">URL del Logo (Opcional)</label>
+                    <input type="url" id="client-image" placeholder="https://..." 
+                        class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/40 transition-all">
+                </div>
+
+                <div class="pt-4 flex gap-3">
+                    <button type="button" onclick="ClientsPage.closeModal()" class="flex-1 py-3 text-sm font-bold text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-2xl transition-all">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="flex-1 py-3 text-sm font-bold bg-primary text-white rounded-2xl hover:bg-blue-700 transition-all shadow-lg shadow-primary/20">
+                        Guardar Cliente
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

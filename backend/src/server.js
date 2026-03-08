@@ -58,6 +58,9 @@ app.use('/api/projects', require('./routes/projects'));
 app.use('/api/tasks', require('./routes/tasks'));
 app.use('/api/teams', require('./routes/teams'));
 app.use('/api/activity', require('./routes/activity'));
+app.use('/api/myspace', require('./routes/myspace'));
+app.use('/api/clients', require('./routes/clients'));
+app.use('/api/notifications', require('./routes/notifications'));
 
 // ── Health check ────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
@@ -82,3 +85,12 @@ server.listen(PORT, '0.0.0.0', () => {
 });
 
 // trigger redeploy
+
+// Catch unhandled errors
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception thrown:', err);
+});

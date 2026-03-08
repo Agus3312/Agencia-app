@@ -46,9 +46,12 @@ const ProjectService = {
         try {
             const project = await ApiAdapter.get(`/api/projects/${id}`);
             // Update cache
-            if (this._cache) {
-                const idx = this._cache.findIndex(p => p.id === id);
-                if (idx !== -1) this._cache[idx] = project;
+            if (!this._cache) this._cache = [];
+            const idx = this._cache.findIndex(p => p.id === id);
+            if (idx !== -1) {
+                this._cache[idx] = project;
+            } else {
+                this._cache.push(project);
             }
             return project;
         } catch (err) {
@@ -86,24 +89,59 @@ const ProjectService = {
     },
 
     // ── Tasks ────────────────────────────────────────────────────────────
-    async addTask(projectId, title) {
-        await ApiAdapter.post('/api/tasks', { projectId, title });
-        await this.fetchAll();
+    async addTask(projectId, taskData) {
+        const payload = typeof taskData === 'string' ? { projectId, title: taskData } : { projectId, ...taskData };
+        const newTask = await ApiAdapter.post('/api/tasks', payload);
+        await this.fetchById(projectId); // Update specific project cache
+        return newTask;
+    },
+
+    async updateTask(projectId, taskId, updates) {
+        const updatedTask = await ApiAdapter.patch(`/api/tasks/${taskId}`, updates);
+        
+        // Update local cache
+        const project = this.getById(projectId);
+        if (project && project.tasks) {
+            const idx = project.tasks.findIndex(t => t.id === taskId);
+            if (idx !== -1) project.tasks[idx] = { ...project.tasks[idx], ...updatedTask };
+        }
+        
+        return updatedTask;
+    },
+
+    async updateTaskStatus(projectId, taskId, newStatus) {
+        const isDone = newStatus === 'done';
+        return this.updateTask(projectId, taskId, { status: newStatus, done: isDone });
     },
 
     async toggleTask(projectId, taskId) {
         const project = this.getById(projectId);
         if (!project) return;
+
         const task = project.tasks.find(t => t.id === taskId);
-        if (task) {
-            await ApiAdapter.patch(`/api/tasks/${taskId}`, { done: !task.done });
-            await this.fetchAll();
-        }
+        if (!task) return;
+
+        const newDone = !task.done;
+        const newStatus = newDone ? 'done' : 'todo';
+
+        return this.updateTask(projectId, taskId, { done: newDone, status: newStatus });
     },
 
     async removeTask(projectId, taskId) {
-        await ApiAdapter.delete(`/api/tasks/${taskId}`);
-        await this.fetchAll();
+        const project = this.getById(projectId);
+        if (!project) return;
+
+        const originalTasks = [...project.tasks];
+        // Optimistic remove
+        project.tasks = project.tasks.filter(t => t.id !== taskId);
+
+        try {
+            await ApiAdapter.delete(`/api/tasks/${taskId}`);
+        } catch (err) {
+            // Rollback
+            project.tasks = originalTasks;
+            throw err;
+        }
     },
 
     getTaskProgress(project) {
@@ -133,10 +171,38 @@ const ProjectService = {
         console.warn('removeFile: endpoint not implemented yet');
     },
 
-    // ── Updates ─────────────────────────────────────────────────────────
+    // ── Updates & Comments ─────────────────────────────────────────────
     async addUpdate(projectId, title, description) {
         await ApiAdapter.post(`/api/projects/${projectId}/updates`, { title, description });
         EventBus.emit('project:update', { projectId });
+    },
+
+    async addTaskComment(projectId, taskId, text) {
+        const comment = await ApiAdapter.post(`/api/tasks/${taskId}/comments`, { text });
+        await this.fetchById(projectId);
+        return comment;
+    },
+
+    async fetchTaskComments(taskId) {
+        return await ApiAdapter.get(`/api/tasks/${taskId}/comments`);
+    },
+
+    // ── Time Tracking ──────────────────────────────────────────────────
+    async fetchTaskTime(taskId) {
+        return await ApiAdapter.get(`/api/tasks/${taskId}/time`);
+    },
+
+    async logTime(taskId, duration, note = '') {
+        return await ApiAdapter.post(`/api/tasks/${taskId}/time`, { duration, note });
+    },
+
+    // ── Notifications ──────────────────────────────────────────────────
+    async fetchNotifications() {
+        return await ApiAdapter.get('/api/notifications');
+    },
+
+    async markNotificationRead(id) {
+        return await ApiAdapter.patch(`/api/notifications/${id}/read`, {});
     }
 };
 

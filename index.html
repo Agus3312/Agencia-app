@@ -49,20 +49,26 @@
 </head>
 
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 h-screen flex overflow-hidden">
-    <!-- Sidebar Container -->
-    <div id="sidebar-container"></div>
+    <!-- Sidebar Container (Left Layer) -->
+    <div id="sidebar-container" class="hidden lg:block z-40"></div>
 
-    <!-- Main Content -->
-    <main class="flex-1 lg:ml-64 flex flex-col min-w-0 h-screen overflow-hidden">
-        <!-- Header Container -->
-        <div id="header-container"></div>
+    <!-- Main Content Wrapper (Right Layer) -->
+    <div class="flex-1 flex flex-col min-w-0 h-screen lg:ml-64 relative bg-background-light dark:bg-background-dark">
+        
+        <!-- Global Top Bar Container (Top Layer) -->
+        <div id="topbar-container" class="w-full flex-shrink-0 z-30"></div>
 
-        <!-- Pages Container (scrollable) -->
-        <div id="pages-container" class="flex-1 overflow-y-auto"></div>
-    </main>
+        <!-- Pages Container (scrollable Workspace) -->
+        <main class="main-workspace-container">
+            <div id="content" class="workspace-content">
+                <!-- Dynamic content will be loaded here -->
+            </div>
+        </main>
+    </div>
 
     <!-- Scripts: Third-party -->
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- Scripts: Utilities (load first — no dependencies) -->
     <script src="js/utils/helpers.js"></script>
@@ -81,7 +87,7 @@
 
     <!-- Scripts: Components (depend on AuthService) -->
     <script src="js/components/sidebar.js"></script>
-    <script src="js/components/header.js"></script>
+    <script src="js/components/topbar.js"></script>
 
     <!-- Scripts: App core -->
     <script src="js/router.js"></script>

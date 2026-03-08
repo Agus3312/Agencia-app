@@ -1,11 +1,24 @@
 /* Theme Configuration - CSS Variables and Base Styles */
 
 :root {
-    --primary: #1d3faf;
-    --background-light: #f6f6f8;
-    --background-dark: #0f172a;
-    --surface-dark: #1e293b;
-    --border-dark: #334155;
+    /* Brand Accent */
+    --primary: #6366f1; /* Indigo SaaS accent */
+    --primary-hover: #4f46e5;
+    
+    /* Light Mode */
+    --background-light: #f8fafc;
+    
+    /* Dark Mode (Neutral Minimalist SaaS) */
+    --background-dark: #0f172a; /* Main body bg */
+    --surface-dark: #1e293b; /* Sidebar / Cards bg */
+    --border-dark: #334155; /* Soft borders */
+    
+    /* Spacing System Base Values */
+    --space-2: 0.5rem;   /* 8px */
+    --space-3: 0.75rem;  /* 12px */
+    --space-4: 1rem;     /* 16px */
+    --space-6: 1.5rem;   /* 24px */
+    --space-8: 2rem;     /* 32px */
 }
 
 * {

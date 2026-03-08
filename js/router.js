@@ -33,9 +33,17 @@ const Router = {
             path: 'pages/reports.html',
             title: 'Reports & Analytics'
         },
+        myspace: {
+            path: 'pages/myspace.html',
+            title: 'Mi Espacio'
+        },
         settings: {
             path: 'pages/settings.html',
             title: 'Settings'
+        },
+        clients: {
+            path: 'pages/clients.html',
+            title: 'Gestión de Clientes'
         }
     },
 
@@ -116,7 +124,7 @@ const Router = {
      * Load page content
      */
     async loadPage(pageId) {
-        const container = document.getElementById('pages-container');
+        const container = document.getElementById('content');
         if (!container) return;
 
         // Show loading state
@@ -202,38 +210,43 @@ const Router = {
         // For example, initialize charts, tables, event listeners, etc.
         console.log(`Page '${pageId}' loaded and initialized`);
 
-        if (pageId === 'teams') {
-            // Load TeamService if not already loaded
-            if (!window.TeamService) {
-                const scriptService = document.createElement('script');
-                scriptService.src = 'js/services/TeamService.js';
-                document.body.appendChild(scriptService);
-
-                scriptService.onload = () => {
-                    // Load controller after service is ready
-                    this.loadController('js/pages/teams.js', 'TeamsPage');
+        switch (pageId) {
+            case 'dashboard':
+                const loadDashboard = () => {
+                    this.loadService('js/services/ProjectService.js', 'ProjectService', () => {
+                        this.loadController('js/pages/dashboard.js', 'DashboardPage');
+                    });
                 };
-            } else {
-                this.loadController('js/pages/teams.js', 'TeamsPage');
-            }
-        }
+                if (!window.TeamService) {
+                    const scriptService = document.createElement('script');
+                    scriptService.src = 'js/services/TeamService.js';
+                    document.body.appendChild(scriptService);
+                    scriptService.onload = loadDashboard;
+                } else {
+                    loadDashboard();
+                }
+                break;
+            case 'myspace':
+                this.loadController('js/pages/myspace.js', 'MySpacePage');
+                break;
+            case 'teams':
+                if (!window.TeamService) {
+                    const scriptService = document.createElement('script');
+                    scriptService.src = 'js/services/TeamService.js';
+                    document.body.appendChild(scriptService);
 
-        if (pageId === 'dashboard') {
-            // Dashboard needs both TeamService and ProjectService
-            const loadDashboard = () => {
+                    scriptService.onload = () => {
+                        this.loadController('js/pages/teams.js', 'TeamsPage');
+                    };
+                } else {
+                    this.loadController('js/pages/teams.js', 'TeamsPage');
+                }
+                break;
+            case 'reports':
                 this.loadService('js/services/ProjectService.js', 'ProjectService', () => {
-                    this.loadController('js/pages/dashboard.js', 'DashboardPage');
+                    this.loadController('js/pages/reports.js', 'ReportsPage');
                 });
-            };
-
-            if (!window.TeamService) {
-                const scriptService = document.createElement('script');
-                scriptService.src = 'js/services/TeamService.js';
-                document.body.appendChild(scriptService);
-                scriptService.onload = loadDashboard;
-            } else {
-                loadDashboard();
-            }
+                break;
         }
 
         if (pageId === 'admin') {
@@ -274,6 +287,12 @@ const Router = {
                         ProjectDetailPage.init(this.currentPageParam);
                     }
                 });
+            });
+        }
+
+        if (pageId === 'clients') {
+            this.loadService('js/services/ClientService.js', 'ClientService', () => {
+                this.loadController('js/pages/clients.js', 'ClientsPage');
             });
         }
 

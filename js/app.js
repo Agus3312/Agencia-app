@@ -13,9 +13,15 @@ const App = {
         // Initialize dark mode
         this.initDarkMode();
 
-        // All components are initialized via their own initialization code
-        // Sidebar.init() - called from components/sidebar.js
-        // Header.init() - called from components/header.js
+        // Initialize UI Components
+        if (window.Sidebar) {
+            Sidebar.init();
+        }
+        
+        // Initialize new TopBar instead of Old Header
+        if (window.TopBar) {
+            TopBar.init();
+        }
         // Router.init() - called from router.js
 
         this.setupGlobalEventListeners();
@@ -59,7 +65,7 @@ const App = {
             // Ctrl/Cmd + K for search (optional)
             if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
                 e.preventDefault();
-                const searchInput = document.getElementById('search-input');
+                const searchInput = document.getElementById('global-search-input');
                 if (searchInput) {
                     searchInput.focus();
                 }

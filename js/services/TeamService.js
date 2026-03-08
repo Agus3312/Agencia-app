@@ -49,6 +49,14 @@ const TeamService = {
     },
 
     /**
+     * Delete an empty team metadata record
+     * @returns {Promise<Object>}
+     */
+    async deleteTeam(name) {
+        return await ApiAdapter.delete(`/api/teams/metadata/${encodeURIComponent(name)}`);
+    },
+
+    /**
      * Get member by ID (from cache)
      */
     getById(id) {

@@ -14,6 +14,7 @@ router.get('/', async (req, res, next) => {
         const projects = await prisma.project.findMany({
             include: {
                 tasks: true,
+                client: true,
                 members: {
                     include: { user: { select: { id: true, name: true, image: true } } }
                 },
@@ -30,18 +31,27 @@ router.get('/', async (req, res, next) => {
             color: p.color,
             status: p.status,
             dueDate: p.dueDate.toISOString(),
+            budget: p.budget,
+            estimatedHours: p.estimatedHours,
+            client: p.client ? { id: p.client.id, name: p.client.name } : null,
             createdAt: p.createdAt.toISOString(),
             tasks: p.tasks.map(t => ({
-                id: t.id, title: t.title, done: t.done, createdAt: t.createdAt.toISOString()
+                id: t.id,
+                title: t.title,
+                done: t.done,
+                priority: t.priority,
+                dueDate: t.dueDate ? t.dueDate.toISOString() : null,
+                createdAt: t.createdAt.toISOString(),
+                assignedId: t.assignedId
             })),
             team: p.members.map(m => ({
                 id: m.user.id,
                 name: m.user.name,
                 avatar: m.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.user.name)}&background=random`
             })),
-            chat: [],   // Loaded separately on detail
-            files: [],  // Loaded separately on detail
-            updates: [], // Loaded separately on detail
+            chat: [],   
+            files: [],  
+            updates: [], 
             chatCount: p._count.messages,
             filesCount: p._count.files,
             updatesCount: p._count.updates
@@ -59,7 +69,14 @@ router.get('/:id', async (req, res, next) => {
         const project = await prisma.project.findUnique({
             where: { id: req.params.id },
             include: {
-                tasks: { orderBy: { createdAt: 'asc' } },
+                client: true,
+                tasks: {
+                    orderBy: { createdAt: 'asc' },
+                    include: {
+                        assignedTo: { select: { id: true, name: true, image: true } },
+                        _count: { select: { comments: true } }
+                    }
+                },
                 members: {
                     include: { user: { select: { id: true, name: true, image: true, role: true } } }
                 },
@@ -90,9 +107,28 @@ router.get('/:id', async (req, res, next) => {
             color: project.color,
             status: project.status,
             dueDate: project.dueDate.toISOString(),
+            budget: project.budget,
+            estimatedHours: project.estimatedHours,
+            client: project.client ? { id: project.client.id, name: project.client.name, company: project.client.company } : null,
             createdAt: project.createdAt.toISOString(),
             tasks: project.tasks.map(t => ({
-                id: t.id, title: t.title, done: t.done, createdAt: t.createdAt.toISOString()
+                id: t.id,
+                title: t.title,
+                done: t.done,
+                description: t.description,
+                priority: t.priority,
+                dueDate: t.dueDate ? t.dueDate.toISOString() : null,
+                labels: t.labels,
+                createdAt: t.createdAt.toISOString(),
+                assignedId: t.assignedId,
+                assignedTo: t.assignedTo
+                    ? {
+                        id: t.assignedTo.id,
+                        name: t.assignedTo.name,
+                        avatar: t.assignedTo.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(t.assignedTo.name)}&background=random`
+                    }
+                    : null,
+                commentsCount: t._count?.comments || 0
             })),
             team: project.members.map(m => ({
                 id: m.user.id,
@@ -131,11 +167,14 @@ router.get('/:id', async (req, res, next) => {
 // ── POST /api/projects ──────────────────────────────────────────────
 router.post('/', adminOnly, async (req, res, next) => {
     try {
-        const { name, description, color, status, dueDate, memberIds } = req.body;
+        const { name, description, color, status, dueDate, memberIds, clientId, budget, estimatedHours } = req.body;
 
         if (!name || !dueDate) {
             return res.status(400).json({ error: 'Nombre y fecha de vencimiento son requeridos' });
         }
+
+        // Filter out the creator from memberIds if already present to avoid duplicates
+        const otherMemberIds = (memberIds || []).filter(id => id !== req.userId);
 
         const project = await prisma.project.create({
             data: {
@@ -144,11 +183,14 @@ router.post('/', adminOnly, async (req, res, next) => {
                 color: color || 'blue',
                 status: status || 'planning',
                 dueDate: new Date(dueDate),
+                budget: budget ? parseFloat(budget) : null,
+                estimatedHours: estimatedHours ? parseInt(estimatedHours) : null,
+                clientId: clientId || null,
                 createdById: req.userId,
                 members: {
                     create: [
                         { userId: req.userId, role: 'leader' },
-                        ...(memberIds || []).map(id => ({ userId: id, role: 'member' }))
+                        ...otherMemberIds.map(id => ({ userId: id, role: 'member' }))
                     ]
                 }
             }
@@ -164,13 +206,16 @@ router.post('/', adminOnly, async (req, res, next) => {
 // ── PATCH /api/projects/:id ─────────────────────────────────────────
 router.patch('/:id', async (req, res, next) => {
     try {
-        const { name, description, color, status, dueDate } = req.body;
+        const { name, description, color, status, dueDate, clientId, budget, estimatedHours } = req.body;
         const data = {};
         if (name !== undefined) data.name = name;
         if (description !== undefined) data.description = description;
         if (color !== undefined) data.color = color;
         if (status !== undefined) data.status = status;
         if (dueDate !== undefined) data.dueDate = new Date(dueDate);
+        if (clientId !== undefined) data.clientId = clientId || null;
+        if (budget !== undefined) data.budget = budget ? parseFloat(budget) : null;
+        if (estimatedHours !== undefined) data.estimatedHours = estimatedHours ? parseInt(estimatedHours) : null;
 
         const project = await prisma.project.update({
             where: { id: req.params.id },

@@ -23,7 +23,7 @@ router.get('/metadata', async (req, res, next) => {
 router.post('/metadata', adminOnly, async (req, res, next) => {
     try {
         const { name } = req.body;
-        if (!name) return res.status(400).json({ error: 'Nombre del equipo querido' });
+        if (!name) return res.status(400).json({ error: 'Nombre del equipo requerido' });
         
         const team = await prisma.team.create({ data: { name } });
         await logActivity(req.userId, 'user_updated', 'creó el equipo', name);
@@ -31,6 +31,26 @@ router.post('/metadata', adminOnly, async (req, res, next) => {
     } catch (err) {
         // If unique constraint violation, return existing
         if (err.code === 'P2002') return res.status(409).json({ error: 'El equipo ya existe' });
+        next(err);
+    }
+});
+
+// ── DELETE /api/teams/metadata/:name ─────────────────────────────────
+// Deletes a standalone team (Admin only)
+router.delete('/metadata/:name', adminOnly, async (req, res, next) => {
+    try {
+        const name = req.params.name;
+        // Check if there are users in this team
+        const usersInTeam = await prisma.user.count({ where: { team: name } });
+        if (usersInTeam > 0) {
+            return res.status(400).json({ error: `No se puede eliminar: Hay ${usersInTeam} usuarios en este equipo.` });
+        }
+        
+        await prisma.team.delete({ where: { name } });
+        await logActivity(req.userId, 'user_updated', 'eliminó el equipo', name);
+        res.json({ success: true });
+    } catch (err) {
+        if (err.code === 'P2025') return res.status(404).json({ error: 'Equipo no encontrado' });
         next(err);
     }
 });
@@ -119,12 +139,34 @@ router.patch('/:id', adminOnly, async (req, res, next) => {
 router.delete('/:id', adminOnly, async (req, res, next) => {
     try {
         const user = await prisma.user.findUnique({ where: { id: req.params.id }, select: { name: true } });
+        
+        // Delete related records first to avoid foreign key constraint violations
+        await prisma.projectMember.deleteMany({ where: { userId: req.params.id } });
+        await prisma.personalTask.deleteMany({ where: { userId: req.params.id } });
+        await prisma.personalNote.deleteMany({ where: { userId: req.params.id } });
+        
+        // Unassign user from tasks (set assignedId to null)
+        await prisma.task.updateMany({
+            where: { assignedId: req.params.id },
+            data: { assignedId: null }
+        });
+        
+        // Clean up project/system activity data authored by this user
+        // (In a real app, these would be reassigned to a "Deleted User" or soft-deleted)
+        await prisma.message.deleteMany({ where: { authorId: req.params.id } });
+        await prisma.file.deleteMany({ where: { userId: req.params.id } });
+        await prisma.update.deleteMany({ where: { authorId: req.params.id } });
+        await prisma.activityLog.deleteMany({ where: { userId: req.params.id } });
+        
+        // Then delete the user
         await prisma.user.delete({ where: { id: req.params.id } });
+        
         if (user) {
             await logActivity(req.userId, 'user_deleted', 'eliminó al usuario', user.name);
         }
         res.json({ success: true });
     } catch (err) {
+        console.error('🔥 ERROR AL ELIMINAR USUARIO:', err);
         next(err);
     }
 });

@@ -26,24 +26,47 @@ model User {
   files          File[]
   updates        Update[]
   activityLogs   ActivityLog[]   @relation("ActivityPerformedBy")
+  personalTasks  PersonalTask[]
+  personalNotes  PersonalNote[]
+
+  comments       Comment[]
+  notifications  Notification[]
+  timeEntries    TimeEntry[]
 }
 
 // ── Projects ───────────────────────────────────────────
 model Project {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  color       String   @default("blue")
-  status      String   @default("planning")
-  dueDate     DateTime
-  createdAt   DateTime @default(now())
-  createdById String
+  id              String   @id @default(cuid())
+  name            String
+  description     String?
+  color           String   @default( "blue" )
+  status          String   @default( "planning" )
+  dueDate         DateTime
+  budget          Float?
+  estimatedHours  Int?
+  createdAt       DateTime @default( now() )
+  createdById     String
+  
+  client          Client?  @relation( fields: [clientId], references: [id] )
+  clientId        String?
 
-  members  ProjectMember[]
-  tasks    Task[]
-  messages Message[]
-  files    File[]
-  updates  Update[]
+  members         ProjectMember[]
+  tasks           Task[]
+  messages        Message[]
+  files           File[]
+  updates         Update[]
+  comments        Comment[]
+}
+
+// ── Clients ──────────────────────────────────────────────
+model Client {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?
+  company   String?
+  image     String?
+  createdAt DateTime @default(now())
+  projects  Project[]
 }
 
 // ── Project Members (many-to-many) ─────────────────────
@@ -60,14 +83,68 @@ model ProjectMember {
 
 // ── Tasks ──────────────────────────────────────────────
 model Task {
-  id         String   @id @default(cuid())
-  title      String
-  done       Boolean  @default(false)
-  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId  String
-  assignedTo User?    @relation("assignedTasks", fields: [assignedId], references: [id])
-  assignedId String?
-  createdAt  DateTime @default(now())
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  done        Boolean  @default(false)
+  status      String   @default("todo") // todo, in-progress, review, done
+  priority    String   @default("medium") // low, medium, high, urgent
+  dueDate     DateTime?
+  labels      String[] @default([])
+  order       Int      @default(0)
+  
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId   String
+  assignedTo  User?    @relation("assignedTasks", fields: [assignedId], references: [id])
+  assignedId  String?
+  createdAt   DateTime @default(now())
+  
+  comments    Comment[]
+  timeEntries TimeEntry[]
+}
+
+// ── Comments ───────────────────────────────────────────
+model Comment {
+  id        String   @id @default(cuid())
+  text      String
+  createdAt DateTime @default(now())
+  
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  
+  task      Task?    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  taskId    String?
+  
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String?
+}
+
+// ── Notifications ──────────────────────────────────────
+model Notification {
+  id        String   @id @default(cuid())
+  type      String   // 'assignment', 'comment', 'mention', 'due_date'
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  link      String?  // e.g., #project-detail:id
+  createdAt DateTime @default(now())
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+}
+
+// ── Time Tracking ──────────────────────────────────────
+model TimeEntry {
+  id        String   @id @default(cuid())
+  duration  Int      // in minutes
+  note      String?
+  date      DateTime @default(now())
+  
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  taskId    String
+  
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
 }
 
 // ── Messages (Chat) ────────────────────────────────────
@@ -122,4 +199,22 @@ model Team {
   id        String   @id @default(cuid())
   name      String   @unique
   createdAt DateTime @default(now())
+}
+
+// ── Personal Space ─────────────────────────────────────
+model PersonalTask {
+  id        String   @id @default(cuid())
+  title     String
+  done      Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  createdAt DateTime @default(now())
+}
+
+model PersonalNote {
+  id        String   @id @default(cuid())
+  content   String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @unique
+  updatedAt DateTime @updatedAt
 }

@@ -7,9 +7,14 @@
  *   const projects = await ApiAdapter.get('/api/projects');
  *   const data = await ApiAdapter.post('/api/auth/login', { email, password });
  */
+const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
 const ApiAdapter = {
-    // Base URL — points to deployed backend on Railway
-    BASE_URL: 'https://agencia-app-production.up.railway.app',
+    // Base URL — points to local backend during development, or Railway in production
+    BASE_URL: isLocalhost 
+        ? `http://${window.location.hostname}:3001`
+        : 'https://agencia-app-production.up.railway.app', // <-- CAMBIAR POR LA URL QUE TE DE RAILWAY
+    
     TOKEN_KEY: 'auth_token',
     _cache: {},
 
@@ -97,6 +102,19 @@ const ApiAdapter = {
             body: JSON.stringify(body)
         });
         this.clearCache(); // Invalidar caché en mutaciones
+        return this._handleResponse(res);
+    },
+
+    /**
+     * PUT request
+     */
+    async put(path, body) {
+        const res = await fetch(this.BASE_URL + path, {
+            method: 'PUT',
+            headers: this._headers(),
+            body: JSON.stringify(body)
+        });
+        this.clearCache(); // Invalidar caché
         return this._handleResponse(res);
     },
 

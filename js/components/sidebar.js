@@ -12,6 +12,12 @@ const Sidebar = {
             icon_name: 'Project Dashboard'
         },
         {
+            id: 'myspace',
+            title: 'Mi Espacio',
+            icon: 'person',
+            icon_name: 'Área Personal'
+        },
+        {
             id: 'projects',
             title: 'Projects',
             icon: 'assignment',
@@ -28,6 +34,12 @@ const Sidebar = {
             title: 'Reports',
             icon: 'bar_chart',
             icon_name: 'Analytics & Reports'
+        },
+        {
+            id: 'clients',
+            title: 'Clientes',
+            icon: 'group',
+            icon_name: 'Gestión de Clientes'
         },
         {
             id: 'admin',
@@ -123,24 +135,16 @@ const Sidebar = {
                 
                 // Close sidebar on mobile
                 if (window.innerWidth <= 1024) {
-                    const sidebar = document.querySelector('.sidebar');
-                    if (sidebar) sidebar.classList.remove('open');
+                    const sidebarContainer = document.getElementById('sidebar-container');
+                    if (sidebarContainer && !sidebarContainer.classList.contains('hidden')) {
+                        sidebarContainer.classList.add('hidden');
+                        sidebarContainer.classList.remove('fixed', 'inset-y-0', 'left-0', 'w-64', 'shadow-2xl');
+                    }
                 }
             });
         });
 
-        // Close when clicking outside on mobile
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth <= 1024) {
-                const sidebar = document.querySelector('.sidebar');
-                const menuBtn = document.getElementById('mobile-menu-btn');
-                if (sidebar && sidebar.classList.contains('open')) {
-                    if (!sidebar.contains(e.target) && (!menuBtn || !menuBtn.contains(e.target))) {
-                        sidebar.classList.remove('open');
-                    }
-                }
-            }
-        });
+        // Old click-outside logic removed. Handled in topbar.js
 
         // Logout button
         const logoutBtn = document.getElementById('logout-btn');

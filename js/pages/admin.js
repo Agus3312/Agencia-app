@@ -61,14 +61,14 @@ window.AdminPage = {
         this.loadTab(tabId);
     },
 
-    loadTab(tabId) {
+    async loadTab(tabId) {
         const content = document.getElementById('tab-content');
         if (!content) return;
         switch (tabId) {
-            case 'users': content.innerHTML = this.renderUsers(); break;
-            case 'create': content.innerHTML = this.renderCreateUser(); break;
-            case 'activity': content.innerHTML = this.renderActivity(); break;
-            case 'permissions': content.innerHTML = this.renderPermissions(); break;
+            case 'users': content.innerHTML = await this.renderUsers(); break;
+            case 'create': content.innerHTML = await this.renderCreateUser(); break;
+            case 'activity': content.innerHTML = await this.renderActivity(); break;
+            case 'permissions': content.innerHTML = await this.renderPermissions(); break;
         }
     },
 
