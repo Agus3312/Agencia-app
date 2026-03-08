@@ -206,12 +206,20 @@ router.post('/:id/messages', async (req, res, next) => {
             include: { author: { select: { name: true } } }
         });
 
-        res.status(201).json({
+        const formattedMessage = {
             id: message.id,
             author: message.author.name,
             text: message.text,
             timestamp: message.createdAt.toISOString()
-        });
+        };
+
+        // Emit realtime event to anyone in the project room
+        const io = req.app.get('io');
+        if (io) {
+            io.to(req.params.id).emit('new_message', formattedMessage);
+        }
+
+        res.status(201).json(formattedMessage);
     } catch (err) {
         next(err);
     }
