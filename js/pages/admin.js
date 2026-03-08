@@ -177,7 +177,9 @@ window.AdminPage = {
     },
 
     // ─── TAB: Crear Usuario ─────────────────────────────────────────────────
-    renderCreateUser() {
+    async renderCreateUser() {
+        const teams = await TeamService.fetchTeams() || [];
+
         return `
             <div class="max-w-lg">
                 <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-8">
@@ -201,9 +203,12 @@ window.AdminPage = {
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-1.5">Equipo *</label>
-                            <input type="text" id="new-team" required placeholder="Ej. Marketing Digital, Frontend..."
-                                class="w-full bg-slate-50 dark:bg-black/20 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all"/>
-                            <p class="text-xs text-slate-400 mt-1">Escribá el nombre del equipo libremente (Ej. Frontend, Marketing Digital)</p>
+                            <select id="new-team" required
+                                class="w-full bg-slate-50 dark:bg-black/20 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all">
+                                <option value="">Seleccione un equipo...</option>
+                                ${teams.map(t => `<option value="${t.name}">${t.name}</option>`).join('')}
+                            </select>
+                            <p class="text-xs text-slate-400 mt-1">Para crear un equipo nuevo, hágalo desde la pestaña "Equipos".</p>
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-1.5">Tags <span class="text-xs font-normal text-slate-400">(separados por comas)</span></label>

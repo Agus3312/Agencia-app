@@ -7,6 +7,34 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
+// ── GET /api/teams/metadata ──────────────────────────────────────────
+// Returns a list of all standalone teams
+router.get('/metadata', async (req, res, next) => {
+    try {
+        const teams = await prisma.team.findMany({ orderBy: { name: 'asc' } });
+        res.json(teams);
+    } catch (err) {
+        next(err);
+    }
+});
+
+// ── POST /api/teams/metadata ─────────────────────────────────────────
+// Creates a new standalone team (Admin only)
+router.post('/metadata', adminOnly, async (req, res, next) => {
+    try {
+        const { name } = req.body;
+        if (!name) return res.status(400).json({ error: 'Nombre del equipo querido' });
+        
+        const team = await prisma.team.create({ data: { name } });
+        await logActivity(req.userId, 'user_updated', 'creó el equipo', name);
+        res.status(201).json(team);
+    } catch (err) {
+        // If unique constraint violation, return existing
+        if (err.code === 'P2002') return res.status(409).json({ error: 'El equipo ya existe' });
+        next(err);
+    }
+});
+
 // ── GET /api/teams ──────────────────────────────────────────────────
 // Returns users grouped by team
 router.get('/', async (req, res, next) => {

@@ -56,6 +56,18 @@ window.deleteMember = async (id) => {
     }
 };
 
+window.createEmptyTeam = async () => {
+    const name = prompt('Nombre del nuevo equipo:');
+    if (!name || !name.trim()) return;
+    try {
+        await TeamService.createTeam(name.trim());
+        Toast.success('Equipo creado correctamente');
+        await TeamsPage.renderTeams();
+    } catch(err) {
+        Toast.error('Error al crear el equipo. Quizás ya exista.');
+    }
+};
+
 // Make TeamsPage global to avoid redeclaration issues and allow re-init
 window.TeamsPage = {
     currentFilter: 'all', // 'all', 'departments', 'projects'
@@ -71,46 +83,48 @@ window.TeamsPage = {
         if (!container) return;
 
         let members = await TeamService.fetchAll();
+        let teamMetadata = await TeamService.fetchTeams() || [];
 
         // Apply Filters
         if (this.currentFilter === 'departments') {
-            // Logic: Show groups but filter display slightly differently?
-            // For now, let's assume 'departments' just groups by team (default behavior)
-            // but maybe we want to hide "Add" buttons or change layout.
-            // Let's implement a simple filter: Only show members with specific 'roles' or similar if requested.
-            // Actually, the user wants functionality. 
-            // "Departments" could mean grouping by Team (which we do).
-            // "Active Projects" could mean filtering members who have 'Project' tags.
+            // Use metadata
         } else if (this.currentFilter === 'projects') {
-            // Filter members that have tags related to projects or create a synthetic 'active' check
-            // For demo, let's filter members that have at least one tag
             members = members.filter(m => m.tags && m.tags.length > 0);
         }
 
         // Group members by team
         const teams = members.reduce((acc, member) => {
-            if (!acc[member.team]) {
-                acc[member.team] = [];
-            }
+            if (!acc[member.team]) acc[member.team] = [];
             acc[member.team].push(member);
             return acc;
         }, {});
 
+        // Add empty teams from metadata
+        teamMetadata.forEach(t => {
+            if (!teams[t.name]) teams[t.name] = [];
+        });
+
+        const isAdmin = AuthService.isAdmin();
+
         // Generate HTML
-        let html = '';
+        let html = isAdmin ? `
+            <div class="mb-6 flex justify-end">
+                <button onclick="window.createEmptyTeam()" class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors shadow-sm">
+                    <span class="material-symbols-outlined text-base">domain_add</span> Crear Nuevo Equipo
+                </button>
+            </div>
+        ` : '';
 
         if (Object.keys(teams).length === 0) {
-            html = `
+            html += `
                 <div class="flex flex-col items-center justify-center py-20 text-slate-400">
                     <span class="material-symbols-outlined text-6xl mb-4">search_off</span>
-                    <p class="text-lg font-medium">No se encontraron miembros para este filtro</p>
+                    <p class="text-lg font-medium">No se encontraron equipos ni miembros</p>
                 </div>
             `;
         } else {
-            Object.keys(teams).forEach(teamName => {
+            Object.keys(teams).sort().forEach(teamName => {
                 const teamMembers = teams[teamName];
-                // Check Admin Permissions
-                const isAdmin = AuthService.isAdmin();
 
                 html += `
                     <section class="animate-enter">
@@ -160,11 +174,10 @@ window.TeamsPage = {
                     <button class="icon-button text-xs" onclick="openMemberModal('${member.id}')">
                         <span class="material-symbols-outlined">edit</span>
                     </button>
-                    <!--
-                    <button class="icon-button text-xs bg-red-50 text-red-500 hover:bg-red-100" onclick="deleteMember('${member.id}')">
+                    ${AuthService.isAdmin() ? `
+                    <button class="icon-button text-xs bg-red-50 text-red-500 hover:bg-red-100" onclick="deleteMember('${member.id}')" title="Eliminar miembro">
                         <span class="material-symbols-outlined">delete</span>
-                    </button>
-                    -->
+                    </button>` : ''}
                 </div>
                 <h4 class="font-bold text-slate-900 dark:text-white truncate" title="${member.name}">${member.name}</h4>
                 <p class="text-sm text-slate-500 dark:text-slate-400 mb-4 truncate" title="${member.role}">${member.role}</p>

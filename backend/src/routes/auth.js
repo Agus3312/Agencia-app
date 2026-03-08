@@ -84,6 +84,15 @@ router.post('/register', async (req, res, next) => {
             { expiresIn: '7d' }
         );
 
+        // Ensure the team exists in the metadata table
+        if (team) {
+            await prisma.team.upsert({
+                where: { name: team },
+                create: { name: team },
+                update: {}
+            });
+        }
+
         // Log activity
         await logActivity(user.id, 'user_created', 'fue agregado al sistema', user.name);
 

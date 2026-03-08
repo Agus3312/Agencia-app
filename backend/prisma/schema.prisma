@@ -116,3 +116,10 @@ model ActivityLog {
   userId      String
   createdAt   DateTime @default(now())
 }
+
+// ── Teams (Metadata for standalone/empty teams) ────────
+model Team {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+}

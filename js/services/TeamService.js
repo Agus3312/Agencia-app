@@ -28,6 +28,27 @@ const TeamService = {
     },
 
     /**
+     * Fetch all team metadata (names of standalone teams)
+     * @returns {Promise<Array>}
+     */
+    async fetchTeams() {
+        try {
+            return await ApiAdapter.get('/api/teams/metadata');
+        } catch (err) {
+            console.error('TeamService.fetchTeams error:', err);
+            return [];
+        }
+    },
+
+    /**
+     * Create a new empty team
+     * @returns {Promise<Object>}
+     */
+    async createTeam(name) {
+        return await ApiAdapter.post('/api/teams/metadata', { name });
+    },
+
+    /**
      * Get member by ID (from cache)
      */
     getById(id) {
