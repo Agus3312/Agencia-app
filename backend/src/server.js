@@ -44,7 +44,9 @@ app.use(require('./middleware/errorHandler'));
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`\n  🚀 Backend corriendo en http://localhost:${PORT}`);
     console.log(`  📊 API:       http://localhost:${PORT}/api/health`);
-    console.log(`  🌐 Frontend:  http://localhost:${PORT}\n`);
+    console.log(`  🌐 Frontend:  http://localhost:${PORT}`);
+    console.log(`  🧩 ENV Keys:  ${Object.keys(process.env).join(', ')}`);
+    console.log(`  ❓ DB URL?:   ${!!process.env.DATABASE_URL}\n`);
 });
 
 // trigger redeploy
