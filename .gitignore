@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Environment variables (NEVER commit)
+.env
+.env.local
+.env.production
+
+# Prisma
+backend/prisma/migrations/**/migration_lock.toml
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+
+# Gemini agent artifacts
+.gemini/

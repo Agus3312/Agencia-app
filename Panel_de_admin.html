@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Management Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1d3faf",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#0f172a",
+                        "surface-dark": "#1e293b",
+                        "border-dark": "#334155",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .sidebar-active {
+            background-color: #1d3faf;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex">
+<!-- Sidebar Navigation -->
+<aside class="w-64 border-r border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark flex flex-col fixed h-full">
+<div class="p-6 flex items-center gap-3">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-xl">folder_managed</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">ProManager</h1>
+</div>
+<nav class="flex-1 px-4 space-y-2">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg sidebar-active transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="text-sm font-medium">Projects</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-sm font-medium">Team</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<span class="text-sm font-medium">Reports</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-200 dark:border-border-dark">
+<div class="flex items-center gap-3 px-2 py-3">
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden">
+<img alt="Alex Rivera" class="w-full h-full object-cover" data-alt="User avatar profile picture of Alex Rivera" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWkoFjPIJNM47bixIci9YSGNlDIQ5tXy9AvkLRp28EgFVGUCwEMRJOND6aREkhMkJgI00-9wci452Fu1SU6D4VYgx_HUDmLop1b_4XByp1K6t-KRmXIFW0pNcd_JRgKF-zoeJJKJ9iJoornONhd6xPQ5zhZh1aXbN1oZNd9vU3GW50ATyPz168NPTdGvmTlOeai-pQrWXCUSn1VvohMxDTK3N6eIIv0yoTCm8fPPAbjsOxrJwaZYegRe73qPKGgok2JBw0Ho77g4Y"/>
+</div>
+<div class="flex-1 overflow-hidden">
+<p class="text-sm font-semibold truncate">Alex Rivera</p>
+<p class="text-xs text-slate-500 dark:text-slate-400 truncate">Admin Account</p>
+</div>
+<button class="text-slate-400 hover:text-white">
+<span class="material-symbols-outlined text-xl">logout</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 ml-64 flex flex-col">
+<!-- Header -->
+<header class="h-16 border-b border-slate-200 dark:border-border-dark bg-white/80 dark:bg-surface-dark/80 backdrop-blur-md sticky top-0 z-10 px-8 flex items-center justify-between">
+<div class="relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="w-full bg-slate-100 dark:bg-slate-900 border-none rounded-lg py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/50 text-slate-900 dark:text-white" placeholder="Search projects, tasks, or team members..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2.5 right-2.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white dark:border-surface-dark"></span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="h-6 w-px bg-slate-200 dark:border-border-dark mx-2"></div>
+<button class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all">
+<span class="material-symbols-outlined text-lg">add</span>
+                    Create New Project
+                </button>
+</div>
+</header>
+<!-- Dashboard Content -->
+<div class="p-8">
+<div class="mb-8">
+<h2 class="text-2xl font-bold dark:text-white">Project Dashboard</h2>
+<p class="text-slate-500 dark:text-slate-400">Welcome back, Alex. Here's what's happening today.</p>
+</div>
+<!-- Metrics Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+<div class="bg-white dark:bg-surface-dark p-6 rounded-xl border border-slate-200 dark:border-border-dark shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-primary/10 rounded-lg text-primary">
+<span class="material-symbols-outlined">inventory_2</span>
+</div>
+<span class="text-emerald-500 text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                            +12%
+                        </span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Total Projects</p>
+<h3 class="text-3xl font-bold mt-1">24</h3>
+</div>
+<div class="bg-white dark:bg-surface-dark p-6 rounded-xl border border-slate-200 dark:border-border-dark shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-amber-500/10 rounded-lg text-amber-500">
+<span class="material-symbols-outlined">task_alt</span>
+</div>
+<span class="text-emerald-500 text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                            +5%
+                        </span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Active Tasks</p>
+<h3 class="text-3xl font-bold mt-1">142</h3>
+</div>
+<div class="bg-white dark:bg-surface-dark p-6 rounded-xl border border-slate-200 dark:border-border-dark shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-500">
+<span class="material-symbols-outlined">speed</span>
+</div>
+<span class="text-emerald-500 text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                            +2%
+                        </span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Performance</p>
+<h3 class="text-3xl font-bold mt-1">94%</h3>
+</div>
+</div>
+<!-- Active Projects List -->
+<div class="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-border-dark shadow-sm overflow-hidden">
+<div class="p-6 border-b border-slate-200 dark:border-border-dark flex items-center justify-between">
+<h3 class="font-bold text-lg">Active Projects</h3>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-500 transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+<button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-500 transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider border-b border-slate-200 dark:border-border-dark">
+<th class="px-6 py-4">Project Name</th>
+<th class="px-6 py-4">Lead</th>
+<th class="px-6 py-4">Status</th>
+<th class="px-6 py-4">Progress</th>
+<th class="px-6 py-4">Deadline</th>
+<th class="px-6 py-4 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-200 dark:divide-border-dark">
+<!-- Project 1 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center font-bold">M</div>
+<div>
+<p class="font-semibold text-sm">Q4 Marketing Campaign</p>
+<p class="text-xs text-slate-500">Marketing &amp; Sales</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<img class="w-6 h-6 rounded-full" data-alt="Project lead Sarah Chen headshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAV_bed61pa1JOqvoBauo-OkufJPHRtIbB5mwbCbx-AN5FD89mmklDGzNIPrpF6RNTU02Aq_1hOWsVbQUUU2qvrgt04xsLlfk97VrgBn3QRkykBnTP3s3TOaFysIem_rwoFHNiD7QYzOPNZ_JxnRJ7Quvcis76gTQCq2LcfnlxCvgrNbQ7Xf9p_WPOfCC9-33Apyo9HvLRa_DKdVDEVIcH9gPI4U84Xa5Ktben1xuW68xbIqlicWpOoVgGzwoCx2s8x_HEFFgonyyw"/>
+<span class="text-sm font-medium">Sarah Chen</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/10 dark:text-emerald-500">
+                                        On Track
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<div class="w-40">
+<div class="flex items-center justify-between text-xs mb-1">
+<span>75%</span>
+</div>
+<div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5">
+<div class="bg-primary h-1.5 rounded-full" style="width: 75%"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm font-medium">Dec 15, 2023</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit_note</span>
+</button>
+</td>
+</tr>
+<!-- Project 2 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold">W</div>
+<div>
+<p class="font-semibold text-sm">Web App Redesign</p>
+<p class="text-xs text-slate-500">Design &amp; Development</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<img class="w-6 h-6 rounded-full" data-alt="Project lead Marcus Johnson headshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC061szX52Z-jS1-pb11AGmJBB82k3gyvdEL6ITxTR98Yrb9GryXkRIidQiaaUl1CB2KKa9Y1_-DsYvA6PlKiB7RlQj5aa6AfHSSPm0IR8_Ibx5eqq5TeOR9gqwCRwA8B0fRqC6NQw9r9ATglnLWIPcBR5j17kOTLm8AVeM6VcIpBfuSp-hVQ8wM5d-oWAXCF01R1Uq5HhEuCgnA-QjSjxEG-EB_-JiEbRZsLVuPWB-GCB-eYcNAnIjQJ4yxwyksk1GBeKzW77Bg4w"/>
+<span class="text-sm font-medium">Marcus Johnson</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-500/10 dark:text-amber-500">
+                                        At Risk
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<div class="w-40">
+<div class="flex items-center justify-between text-xs mb-1">
+<span>42%</span>
+</div>
+<div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5">
+<div class="bg-amber-500 h-1.5 rounded-full" style="width: 42%"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm font-medium">Nov 30, 2023</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit_note</span>
+</button>
+</td>
+</tr>
+<!-- Project 3 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-rose-500/10 text-rose-500 flex items-center justify-center font-bold">P</div>
+<div>
+<p class="font-semibold text-sm">Product Launch v2.0</p>
+<p class="text-xs text-slate-500">Logistics &amp; Strategy</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<img class="w-6 h-6 rounded-full" data-alt="Project lead David Kim headshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAM6TnqMamPy9rc8LFQSALEMk1S_EcRr372bRdc95yU-66J9WtyXd2q2LG3N8JxsvOv2JSqj_dJVfo71fmXY-xj3MKrrzeHU79pt0nvDT_SPg9mK8fCb1Je0Guy0_TcKhXKPStEQOPJN35rSGaYSb4h3APeBY2D6H2A7PhQEB4xx1WruPyu1kFQ1bkVvGk_ToDC_eM6DendbBqzUiE9UNjJ-bPr_REfADipilEpv8irNqQeYrltjsY-dxyglIF9ESim3yXpbvtO38o"/>
+<span class="text-sm font-medium">David Kim</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-100 text-rose-800 dark:bg-rose-500/10 dark:text-rose-500">
+                                        Delayed
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<div class="w-40">
+<div class="flex items-center justify-between text-xs mb-1">
+<span>18%</span>
+</div>
+<div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5">
+<div class="bg-rose-500 h-1.5 rounded-full" style="width: 18%"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm font-medium">Dec 01, 2023</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit_note</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-6 border-t border-slate-200 dark:border-border-dark flex items-center justify-between text-sm text-slate-500">
+<p>Showing 3 of 24 projects</p>
+<div class="flex gap-2">
+<button class="px-3 py-1 border border-slate-200 dark:border-border-dark rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50" disabled="">Previous</button>
+<button class="px-3 py-1 border border-slate-200 dark:border-border-dark rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">Next</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

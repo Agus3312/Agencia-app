@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Users ──────────────────────────────────────────────
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  role      String   @default("Developer")
+  team      String   @default("Frontend")
+  image     String?
+  tags      String[] @default([])
+  status    String   @default("offline")
+  createdAt DateTime @default(now())
+
+  projectMembers ProjectMember[]
+  assignedTasks  Task[]          @relation("assignedTasks")
+  messages       Message[]
+  files          File[]
+  updates        Update[]
+}
+
+// ── Projects ───────────────────────────────────────────
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  color       String   @default("blue")
+  status      String   @default("planning")
+  dueDate     DateTime
+  createdAt   DateTime @default(now())
+  createdById String
+
+  members  ProjectMember[]
+  tasks    Task[]
+  messages Message[]
+  files    File[]
+  updates  Update[]
+}
+
+// ── Project Members (many-to-many) ─────────────────────
+model ProjectMember {
+  id        String  @id @default(cuid())
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  role      String  @default("member")
+
+  @@unique([projectId, userId])
+}
+
+// ── Tasks ──────────────────────────────────────────────
+model Task {
+  id         String   @id @default(cuid())
+  title      String
+  done       Boolean  @default(false)
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId  String
+  assignedTo User?    @relation("assignedTasks", fields: [assignedId], references: [id])
+  assignedId String?
+  createdAt  DateTime @default(now())
+}
+
+// ── Messages (Chat) ────────────────────────────────────
+model Message {
+  id        String   @id @default(cuid())
+  text      String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  createdAt DateTime @default(now())
+}
+
+// ── Files ──────────────────────────────────────────────
+model File {
+  id         String   @id @default(cuid())
+  name       String
+  type       String   @default("document")
+  url        String?
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId  String
+  uploadedBy User     @relation(fields: [userId], references: [id])
+  userId     String
+  createdAt  DateTime @default(now())
+}
+
+// ── Updates (Progress log) ─────────────────────────────
+model Update {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId   String
+  author      User     @relation(fields: [authorId], references: [id])
+  authorId    String
+  createdAt   DateTime @default(now())
+}

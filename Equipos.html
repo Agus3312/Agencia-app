@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Team Management Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1d3faf",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#0f172a",
+                        "surface-dark": "#1e293b",
+                        "neutral-dark": "#334155",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="w-64 flex-shrink-0 bg-white dark:bg-surface-dark border-r border-slate-200 dark:border-slate-800 flex flex-col">
+<div class="p-6 flex items-center gap-3">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">group_work</span>
+</div>
+<div>
+<h1 class="text-sm font-bold leading-none">Acme Corp</h1>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Management Console</p>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-1 overflow-y-auto">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-neutral-dark rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-primary/10 text-primary dark:bg-primary/20 dark:text-blue-400 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="text-sm font-medium">Teams</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-neutral-dark rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">view_kanban</span>
+<span class="text-sm font-medium">Projects</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-neutral-dark rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="text-sm font-medium">Schedule</span>
+</a>
+<div class="pt-4 pb-2">
+<p class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Settings</p>
+</div>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-neutral-dark rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-neutral-dark rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="text-sm font-medium">Support</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-neutral-dark transition-colors cursor-pointer">
+<div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden bg-cover bg-center" data-alt="User profile avatar small circle" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBqRqItIkX0B5mdJSxuNkhQClPN4PmtVvDZInub-sXtZIGcIS0wADcD9LZOZ5mEvB4K6QNOOgdIeYgHDWFvHpOWVpxcfGD-sWESedWegdsHCu54Ofbt40ZSuAtNyD4g9E9jELUYViYkZV247iwWLM9OA8k5EUhRlPPrEZSs117DcEsVZssmFcAy0otXS-AqSboEZX0EWQwMytXaZyXTsLwLDiSVy0wpeCuUUakkV9M7L5dHFC-4htam7btU0aVUQbuNjy_erNRyhJs')"></div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-medium truncate">Alex Rivers</p>
+<p class="text-xs text-slate-500 dark:text-slate-400 truncate">Admin</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">logout</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+<!-- Header -->
+<header class="h-16 flex items-center justify-between px-8 bg-white dark:bg-surface-dark border-b border-slate-200 dark:border-slate-800 flex-shrink-0">
+<div class="flex items-center gap-4 flex-1">
+<h2 class="text-xl font-bold">Team Management</h2>
+<div class="max-w-md w-full ml-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+<input class="w-full bg-slate-100 dark:bg-neutral-dark border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary transition-all" placeholder="Search for members by name, role or team..." type="text"/>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-neutral-dark rounded-lg transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
+</button>
+<button class="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-xl">person_add</span>
+                        Add Member
+                    </button>
+</div>
+</header>
+<!-- Navigation Tabs & Filter -->
+<div class="px-8 py-4 bg-white dark:bg-surface-dark/50 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between flex-shrink-0">
+<div class="flex gap-6">
+<button class="pb-4 border-b-2 border-primary text-primary font-semibold text-sm">All Teams</button>
+<button class="pb-4 border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-medium text-sm transition-all">Departments</button>
+<button class="pb-4 border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-medium text-sm transition-all">Active Projects</button>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Sort by:</span>
+<select class="bg-transparent border-none text-xs font-semibold focus:ring-0 p-0 pr-6 text-slate-700 dark:text-slate-200">
+<option>Most Recent</option>
+<option>Alphabetical</option>
+<option>Role</option>
+</select>
+</div>
+</div>
+<!-- Dashboard Content -->
+<div class="flex-1 overflow-y-auto p-8 space-y-10 custom-scrollbar">
+<!-- Frontend Section -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-bold flex items-center gap-2">
+                            Frontend
+                            <span class="bg-slate-200 dark:bg-neutral-dark text-slate-600 dark:text-slate-400 text-xs px-2 py-0.5 rounded-full">8 members</span>
+</h3>
+<button class="text-primary text-sm font-semibold hover:underline">View All</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- Member Card -->
+<div class="bg-white dark:bg-surface-dark p-5 rounded-xl border border-slate-200 dark:border-slate-800 hover:shadow-lg dark:hover:shadow-primary/5 transition-all group">
+<div class="flex justify-between items-start mb-4">
+<div class="relative">
+<div class="w-14 h-14 rounded-full bg-cover bg-center border-2 border-white dark:border-slate-700" data-alt="Portrait of a smiling professional developer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAvnS61D-UlI_f2RDGS4cosJrSHPh8GunJ6bqMO1eq55FC7prHTEWSP-fvQSeManmwRENLlMsD6tKwWqyTjrEz7Ck7jFdqYLLHcRuoErJe0xUElrcNfTl_tV20WSrPvc-6JsjPjgUUTvSfRALtm9Yvi_kkCv5b7jnsTSmGHdFX4UTNKMcnwV615oVfw8p6WgyMCks6thMBIMHGA10V2yiRdaQlxU_Lpw_sSCGCAPYCqVgl-Td2oO1gnez6k5Zc0tpzfl73qspNlBM8')"></div>
+<div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white dark:border-surface-dark rounded-full"></div>
+</div>
+<button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<h4 class="font-bold text-slate-900 dark:text-white truncate">Sarah Jenkins</h4>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Lead React Engineer</p>
+<div class="flex flex-wrap gap-1.5 mb-5">
+<span class="text-[10px] px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold uppercase tracking-wider">React</span>
+<span class="text-[10px] px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider">Next.js</span>
+</div>
+<div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-slate-200 border border-white dark:border-surface-dark bg-cover" data-alt="Team member small avatar overlap 1" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAyWJc833UNc8CMgqoVFsDwLdeheZcEaqE4aE8iLYNU8tPxcp0Ie1HFeS2u5dGgz6UrjSGF19LjJWcO97ICpG1zoDmXyjFAFiyzGOmyASoUM4Pt48P_ayDKQzdWaf7ubSq-Dh36jVe-ypfMbLSC9AAzsfAg07Maypyh_4DasUdGvTm1H6hfsNHJqfKAgdK1Y62F2M0eF_Ay2ZAtVH4EkC4unIuZgZgxCGZFdoy65m8IFSfOGX8H8f02fSIS86_wxFeDpfAAl9dziVE')"></div>
+<div class="w-6 h-6 rounded-full bg-slate-300 border border-white dark:border-surface-dark bg-cover" data-alt="Team member small avatar overlap 2" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC8v7dmWx4t5Z1NCYTmxQedYkUbkVIxKkE94UMGRoZulb4B8fpFqUWuZNaehgJzvcYluQVeocygWFqPf-whJBPZlqIgEcOmS2dfEZvH7o_2noqKc7wnzhpsq70vG28fcVmXkC1c2r5_RXlHDt_csSR5tn5jcj57YYk7MgKb1XNSKRS9N8qTc6dc2yfVCl9VgRfHpX_iQP6_89P8eUKV2j8VqkPMsdRuDHpODVobn1TxhlXoCDhzRzPgxsgYsifjgRbK2S7cAg6xdG8')"></div>
+<div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-[8px] text-white font-bold border border-white dark:border-surface-dark">+3</div>
+</div>
+<button class="text-xs font-bold text-primary group-hover:underline">View Profile</button>
+</div>
+</div>
+<!-- Repeat Card 2 -->
+<div class="bg-white dark:bg-surface-dark p-5 rounded-xl border border-slate-200 dark:border-slate-800 hover:shadow-lg dark:hover:shadow-primary/5 transition-all group">
+<div class="flex justify-between items-start mb-4">
+<div class="relative">
+<div class="w-14 h-14 rounded-full bg-cover bg-center border-2 border-white dark:border-slate-700" data-alt="Portrait of a young male web designer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBspaYysSqQhZpIsS8NszBtI1o5iTX7XjMXy4rrMfKGbAxPCW8Iv6ZNazF4QLJeqsy_H8YrTMk9DIsXeEa1996ofbOEt85nCxxpIVj5ebtG7kPxkm5hFzNq44SH6FHvuA9cOBtyLJfSDldirVkL8eZFgsnaD0o4viveJcijEVQey5jeVDp7kH90YbQZvIM874RjIlLfcBAJKyJs_bG6SaN_Grok1uvUzAGxL_UJshecIHWqdAM2DyKVa2oqDcUdDEvjZ-JXPdOhS_8')"></div>
+<div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white dark:border-surface-dark rounded-full"></div>
+</div>
+<button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<h4 class="font-bold text-slate-900 dark:text-white truncate">Marcus Chen</h4>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-4">UI Developer</p>
+<div class="flex flex-wrap gap-1.5 mb-5">
+<span class="text-[10px] px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold uppercase tracking-wider">Tailwind</span>
+<span class="text-[10px] px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider">Vue</span>
+</div>
+<div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-slate-200 border border-white dark:border-surface-dark bg-cover" data-alt="Avatar overlap 3" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBaJa_nSlvk504abKWLeMSqTdFKd2VyqanSd1U0FXslHxMH1gh6Sld-XyPVhTWWur9HXHY_BEVWbOjNMPaipaiazYAhS_hdhNrwNnxmAHu7L5eB5jSc8wNK8m6cPK3ExU0ENvVe3BLoY1VApx2ObW6t0esrGXMC3s2cw4_31JWUpq3Z9AJcbrhQQcy78UVRqJrSjcfXZNe-v-qK7TJTJYe9DPKzPTdpjXKEMYB30Z12GMr9ptKz3WuGyqrxvg6F6NUhzns-3I1Nk8w')"></div>
+<div class="w-6 h-6 rounded-full bg-slate-300 border border-white dark:border-surface-dark bg-cover" data-alt="Avatar overlap 4" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCT7hrxjQUFam1HEk8vgemWCeN9W-mQgdJhWFEoOpba4FiZOUTYSuOfmaJwQPjvIGq2TYpYs1YXzFMcinUYKEyobj2O0R2xvRm6TzOFWoGnG7nrwqD35CmePBH88EjosW8zreeSIaNebnCOIVr1OaJQwiOmWrBvqp5A046QYeaNWIuOaTtBA-9INNNP6bLmSGTzTe8JHrHuqQVGjqrhyQ2t91erqlpvg9EopZrSio5Cb5xyIRym7fcpQSv_Or5cYYFTiqrScJPwaq8')"></div>
+</div>
+<button class="text-xs font-bold text-primary group-hover:underline">View Profile</button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-white dark:bg-surface-dark p-5 rounded-xl border border-slate-200 dark:border-slate-800 hover:shadow-lg dark:hover:shadow-primary/5 transition-all group">
+<div class="flex justify-between items-start mb-4">
+<div class="relative">
+<div class="w-14 h-14 rounded-full bg-cover bg-center border-2 border-white dark:border-slate-700" data-alt="Professional female lead engineer portrait" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC1EXwY69lShJmOz69uL3mJsYiUg-37URQYFaiBbkNuWxfEkZKujN_ISAqjLKpLuYu0pGUbhvT5IyMXYXY8IRF1LV4EQFNUqZ_znscUoNvnyHFcVDLl6Fa_HaEcm4rXdlioAIGY28ABHzKWpxylVdSRYZ9audslZc1BqB2I43RFBAeCoeMVhdPkylEMHYxFhmvMJIAkEWcfXlZKd7AeV1KdzgprFeBnI_QPywVK5pa1xs3hniHqvMJSqBcV0hoi5ApTY_UR3LxZdto')"></div>
+<div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-slate-300 border-2 border-white dark:border-surface-dark rounded-full"></div>
+</div>
+<button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<h4 class="font-bold text-slate-900 dark:text-white truncate">Elena Rodriquez</h4>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Senior UX Engineer</p>
+<div class="flex flex-wrap gap-1.5 mb-5">
+<span class="text-[10px] px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold uppercase tracking-wider">Accessibility</span>
+<span class="text-[10px] px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider">Figma</span>
+</div>
+<div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-slate-200 border border-white dark:border-surface-dark bg-cover" data-alt="Avatar overlap 5" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC-mriURXAlfkOf6l0sYP1i5JDd_-WWjITGPwxaraQxIq-5S77PcAmJX9bpfp_MbuncyiNi4KXdX3XMfb1JarAf9kRu63P7iTcnyFkhzTzhDDigWhLHTw3Z2ntjyM-uALafJ8yJ-zB8_sarxSG3rUCxBdXiLlGTKCq-5TZ0qgDH13QvCbEEh_Bm0JvRC0xEetxSoOJvFlpQng-hT_6b8R_8IHNk5epE4QVRDp3hXHe5bMFvHF9haAQEROTnk6-h_7pKwJTwf9ZZAoU')"></div>
+</div>
+<button class="text-xs font-bold text-primary group-hover:underline">View Profile</button>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-white dark:bg-surface-dark p-5 rounded-xl border border-slate-200 dark:border-slate-800 hover:shadow-lg dark:hover:shadow-primary/5 transition-all group">
+<div class="flex justify-between items-start mb-4">
+<div class="relative">
+<div class="w-14 h-14 rounded-full bg-cover bg-center border-2 border-white dark:border-slate-700" data-alt="Experienced senior software engineer headshot" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAVw5jXWBjFaWcdIYd37fGPYiZKKBrtPm2FRcBcYyPKFjnAKCXUVBnU5vKY2GWuRVMQ8bLofXC4EHo-O6pcGs8NqAw6IumbLkXY_j2CXy-XMewS5LfAy6TqByj-wWeU8Z3_tjdYbeRIPyhGY-6bTUWPTmAfPBeNMwYbbt2n2zpXUMERS5ksm9P4sMBq2tMsxaLYOZhW7o9DcZqWd71GLNfVCf7if2ABTP01zohxKZs51_WprQm95xPGNGTY8IzuPjjyyGa8Hy_FrNI')"></div>
+<div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white dark:border-surface-dark rounded-full"></div>
+</div>
+<button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<h4 class="font-bold text-slate-900 dark:text-white truncate">David Kim</h4>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Junior Developer</p>
+<div class="flex flex-wrap gap-1.5 mb-5">
+<span class="text-[10px] px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold uppercase tracking-wider">Typescript</span>
+</div>
+<div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-slate-200 border border-white dark:border-surface-dark bg-cover" data-alt="Avatar overlap 6" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBG6_hYthMJLaBbI0i6nEjSweRqkPfM-AyE7LNX8KED2CHPtFjtIQ_1R1n3quBH43e_JRVvjdEdhQyAvrJ5CRtJ002o6kGekeXjZcFQMXLJX2pcnVrL2feMoINt33aDjSzDeK8Zncj3LTVZnwChlV0TCWvm42-jVR0vea683M9-mvq69lRRHxc0zqMBB4YPUwT4UsAugbHcl9InBL6PHVRxNxRS9oboQF4Cu0vHSRydxVSLzT5foocbWGJ4pDSM-NWQETok7_XUPMc')"></div>
+<div class="w-6 h-6 rounded-full bg-slate-300 border border-white dark:border-surface-dark bg-cover" data-alt="Avatar overlap 7" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCFCWO8cdtl6KqwS8GR3OxVfTZHyZ57MNy6BB--ydYaFQ4HHA8l-fQEsYZp3DCctIZafos1Tz_wX1XwyouhR4QUMmJeBOgTDy1lnifwAAqE_tJQKwkJ_lo9ZAgW6xL9oHtT-mtznul8gQrfN-z6r3w3xbysi_io0XyFXJIYU2oV8jDaGYif-pAiv1I4-ckDVYTMuuPLyaEyOCy1WnSpRKMVuQqr00LQZ7GdeY9xtUMbqTvg3ySSaZSZjcH7mIuwB9KbSqB_Y_x-qKk')"></div>
+</div>
+<button class="text-xs font-bold text-primary group-hover:underline">View Profile</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Design Section -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-bold flex items-center gap-2">
+                            Design
+                            <span class="bg-slate-200 dark:bg-neutral-dark text-slate-600 dark:text-slate-400 text-xs px-2 py-0.5 rounded-full">4 members</span>
+</h3>
+<button class="text-primary text-sm font-semibold hover:underline">View All</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- Member Card Design 1 -->
+<div class="bg-white dark:bg-surface-dark p-5 rounded-xl border border-slate-200 dark:border-slate-800 hover:shadow-lg dark:hover:shadow-primary/5 transition-all group">
+<div class="flex justify-between items-start mb-4">
+<div class="relative">
+<div class="w-14 h-14 rounded-full bg-cover bg-center border-2 border-white dark:border-slate-700" data-alt="Creative female design lead portrait" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDgzsVB2e6YauysU9Mm2xitPX5uvvJ9Y6UON-kU-XEwWGplOWwxL4QZwoNFBPPv75ZbrahO565YYExa7MB-7cn-1jDyKLrWJdYE7NDmJ7sySlsmgc301h0Ft0w091BCEecu9aDswhZzFaqVl2ZyUItoWP-lL3UKKZjb6WZInZUP8hnRQz-QWsiBYBrD_u3_9WjM61AXrJy82kzDWIkNV1QYCOrxdpn5YqxgdCpA_Xvl_Bby8AGejnSCrESwnldge5RQMj861M77aLk')"></div>
+<div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white dark:border-surface-dark rounded-full"></div>
+</div>
+<button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<h4 class="font-bold text-slate-900 dark:text-white truncate">Lila Thorne</h4>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Product Designer</p>
+<div class="flex flex-wrap gap-1.5 mb-5">
+<span class="text-[10px] px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 font-bold uppercase tracking-wider">Systems</span>
+<span class="text-[10px] px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider">Figma</span>
+</div>
+<div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-slate-200 border border-white dark:border-surface-dark bg-cover" data-alt="Avatar overlap 8" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC_UpfehmyHR6pRznLLpRCyBDcoRmTBG6rhXWhwl3lBygdzT-E7v9pFTIDUANkrH93fGU_ksciZRpBRk2RlF8opBvnvLK-VoPRoNAuRTjI2xgPuCeGEFmGo1ZZAq-h8ENv2wstnaALqMfCEE5-f_OnX_ZFCvsEUisXC101V82GLui3Nv1WvqXiQzNdDxJiitM_05AHkvjA0v98Tc_jZzNR2uZg9uzjKNUNEQ6lUzN877zVjoVtdB-jtu30w5SftLrU8KHpog3c5duo')"></div>
+</div>
+<button class="text-xs font-bold text-primary group-hover:underline">View Profile</button>
+</div>
+</div>
+<!-- Member Card Design 2 -->
+<div class="bg-white dark:bg-surface-dark p-5 rounded-xl border border-slate-200 dark:border-slate-800 hover:shadow-lg dark:hover:shadow-primary/5 transition-all group">
+<div class="flex justify-between items-start mb-4">
+<div class="relative">
+<div class="w-14 h-14 rounded-full bg-cover bg-center border-2 border-white dark:border-slate-700" data-alt="Senior UX researcher headshot portrait" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCbQuTwZtFx_IzBY2405ui1QRAQxy_rijW79fzrZWND12DfP-6oHfnDQc8RJTS1FQjPMv5TEwpgDc8VGZGW_jiRcCfhVrI6LozSDHLf86OeFYKerEHMSPNHMqWqx08r_ESU0ADMwiHLvjOL6kUNcISA-CNygUiww33Q2MKb-_kOaE8OTHIrW82w_T3aHOKdcrSf0XK3hJhZQsmNPwbcX_gI4DeVhr80rYWf4alTmBLKGjA0kKb1fCoDwQ1tujF25erK-MH-475OkR8')"></div>
+<div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-yellow-500 border-2 border-white dark:border-surface-dark rounded-full"></div>
+</div>
+<button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<h4 class="font-bold text-slate-900 dark:text-white truncate">James Wilson</h4>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-4">UX Researcher</p>
+<div class="flex flex-wrap gap-1.5 mb-5">
+<span class="text-[10px] px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 font-bold uppercase tracking-wider">Insights</span>
+<span class="text-[10px] px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider">Testing</span>
+</div>
+<div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-slate-200 border border-white dark:border-surface-dark bg-cover" data-alt="Avatar overlap 9" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAcN5uUbActFTBYl1x-hfwMR3860HH3t1AJuFYodDTdeOyTvOPPU1xt6iBZxBLayqtJMkT9uxfjxfI1hUo0Um_fmODhDu8lMJ0fH8gVelTS-HOG4iyeqKHM7sFL3tHHHgtO_8SiXc3lvKeuWvI1byTfvYfdc-JkCznVe5U4lMyxXB5f0mK-bJwrooXbf6D2VXmlujL7p4EtiwfdI8cRqIuzARG9lhwEzUcCwZ31lSovnTB_xP9O1-7IWJvhYMt35JOwwDh5cjHcbkw')"></div>
+<div class="w-6 h-6 rounded-full bg-slate-300 border border-white dark:border-surface-dark bg-cover" data-alt="Avatar overlap 10" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAvoVcx4r_vOhGe5VZygKSgoAB4rNJO_vfMt6cbYH6Xxv0q7ky_cN8IXHnZQzkjSXIbYLcubfpEen9it1BEtclcVcYtlRQjo7eXUO5dK2bxfu8UyeXfHKRnH9LGMkJDgo4RYb0VltbV4Rt31efHIpH82ETejVh3bY7mEWH55VCxPFopW4kDWRD0JhzfGOsf7ctOyNbWmqIHscWpTXscgzeplSl9A08ytVLnjImfPXwUhBj4X-xsZAzA3Fr3iLW6981FMER1vXM_EyQ')"></div>
+</div>
+<button class="text-xs font-bold text-primary group-hover:underline">View Profile</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Backend Section -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-bold flex items-center gap-2">
+                            Backend
+                            <span class="bg-slate-200 dark:bg-neutral-dark text-slate-600 dark:text-slate-400 text-xs px-2 py-0.5 rounded-full">6 members</span>
+</h3>
+<button class="text-primary text-sm font-semibold hover:underline">View All</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- Member Card Backend 1 -->
+<div class="bg-white dark:bg-surface-dark p-5 rounded-xl border border-slate-200 dark:border-slate-800 hover:shadow-lg dark:hover:shadow-primary/5 transition-all group">
+<div class="flex justify-between items-start mb-4">
+<div class="relative">
+<div class="w-14 h-14 rounded-full bg-cover bg-center border-2 border-white dark:border-slate-700" data-alt="Portrait of an experienced backend developer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDUo23MohR6PCPhW6Od2hzGk1Nl-l2LQyy0wPYN55qUyuplkN7p_c0L3uTWEKPepEIs10zLZKRXkLg_eiOSXQHHRDltFRfUnqKgA6riNWNENnhW8QfbNqJ5UAbdtMAzssTFkE3kMIaQ4kcKC2a3yj6aOq84f00gwpUx72fmPzy6oeCmzLHO8jgBFKQnnM5MkzhwhxuUH0-GyQZhAo7rGjUcyuevzxZECuZm5P3GdaUbwYsIGQtR0Ok5NfD5om3cX0OU_gENaVbTUDQ')"></div>
+<div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white dark:border-surface-dark rounded-full"></div>
+</div>
+<button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<h4 class="font-bold text-slate-900 dark:text-white truncate">Robert Sterling</h4>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Node.js Developer</p>
+<div class="flex flex-wrap gap-1.5 mb-5">
+<span class="text-[10px] px-2 py-0.5 rounded bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 font-bold uppercase tracking-wider">AWS</span>
+<span class="text-[10px] px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider">SQL</span>
+</div>
+<div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-slate-200 border border-white dark:border-surface-dark bg-cover" data-alt="Avatar overlap 11" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAywdbZWUOs9W-SfbW3xPl8x1aRkCGm5Ty1ViuHCa6XkjErTlHH9IXaWFD_YAubmtj5NUZAVEME4gMBOg_2F2kCyDRJ2jS7T_5a5Iiqvk22H-nlRslSnxLg61OtaGzC7hpfI0_HN7adHDKaB6mtcC8vOdN_OV7_BSidFwEUxPWlqQ_L6ljbpW8t6P8iRP8XIPVyRyS0fEW2hyYnLopi9PbD5Om78pmV3GnU8M9diNvQXJCXmUXVSsbeSLV1GASdOUDW99DlXl8B7yE')"></div>
+</div>
+<button class="text-xs font-bold text-primary group-hover:underline">View Profile</button>
+</div>
+</div>
+<!-- Card Add Placeholder -->
+<div class="bg-slate-50 dark:bg-surface-dark/30 p-5 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-800 hover:border-primary/50 transition-all flex flex-col items-center justify-center cursor-pointer min-h-[220px]">
+<div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-neutral-dark flex items-center justify-center text-slate-400 mb-3 group">
+<span class="material-symbols-outlined text-2xl group-hover:text-primary transition-colors">add</span>
+</div>
+<p class="text-sm font-semibold text-slate-500 dark:text-slate-400">Add to Backend</p>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+<!-- Mobile Overlay Message (Optional, but good for Desktop-only tools) -->
+<div class="md:hidden fixed inset-0 bg-background-dark z-50 flex items-center justify-center p-8 text-center">
+<div>
+<span class="material-symbols-outlined text-6xl text-primary mb-4">desktop_windows</span>
+<h2 class="text-xl font-bold mb-2">Desktop View Recommended</h2>
+<p class="text-slate-400 text-sm">Team Management is optimized for desktop browsers. Please rotate your device or use a larger screen.</p>
+</div>
+</div>
+</body></html>

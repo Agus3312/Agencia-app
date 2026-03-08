@@ -1,0 +1,133 @@
+<div class="flex flex-col h-full overflow-y-auto">
+    <!-- Header with Search -->
+    <header class="border-b border-slate-200 dark:border-slate-800 flex-shrink-0">
+        <div class="px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4 flex-1">
+                <h2 class="text-xl font-bold">Team Management</h2>
+                <div class="max-w-md w-full ml-4">
+                    <div class="relative">
+                        <span
+                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+                        <input
+                            class="w-full bg-slate-100 dark:bg-surface-dark border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary transition-all"
+                            placeholder="Buscar miembros por nombre, rol o equipo..." type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button class="primary-button" onclick="openMemberModal()">
+                    <span class="material-symbols-outlined text-xl">person_add</span>
+                    <span>Agregar Miembro</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="px-8 pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <div class="flex gap-6">
+                <button class="pb-4 border-b-2 border-primary text-primary font-semibold text-sm">Todos los
+                    Equipos</button>
+                <button
+                    class="pb-4 border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-medium text-sm transition-all">Departamentos</button>
+                <button
+                    class="pb-4 border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-medium text-sm transition-all">Proyectos
+                    Activos</button>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Ordenar por:</span>
+                <select
+                    class="bg-transparent border-none text-xs font-semibold focus:ring-0 p-0 pr-6 text-slate-700 dark:text-slate-200">
+                    <option>Más Reciente</option>
+                    <option>Alfabético</option>
+                    <option>Rol</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <!-- Teams Content -->
+    <div class="p-8 space-y-10" id="teams-container">
+        <!-- Content will be injected here by JS -->
+        <div class="flex items-center justify-center h-64">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+    </div>
+
+    <!-- Modal for Adding/Editing Member -->
+    <div id="member-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity" onclick="closeMemberModal()">
+        </div>
+        <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-2xl p-6 transform transition-all scale-100">
+            <div class="flex justify-between items-center mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white" id="modal-title">Agregar Nuevo Miembro</h3>
+                <button onclick="closeMemberModal()"
+                    class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <form id="member-form" class="space-y-4">
+                <input type="hidden" id="member-id">
+
+                <div class="space-y-1.5">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-200">Nombre
+                        Completo</label>
+                    <input type="text" id="member-name" required
+                        class="w-full bg-slate-50 dark:bg-black/20 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all">
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-200">Rol / Cargo</label>
+                    <input type="text" id="member-role" required
+                        class="w-full bg-slate-50 dark:bg-black/20 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all">
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-200">Equipo</label>
+                    <div class="relative">
+                        <select id="member-team" required
+                            class="w-full bg-slate-50 dark:bg-black/20 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all appearance-none">
+                            <option value="Frontend">Frontend</option>
+                            <option value="Backend">Backend</option>
+                            <option value="Design">Design</option>
+                            <option value="Management">Management</option>
+                        </select>
+                        <span
+                            class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-200">Tags <span
+                            class="text-xs font-normal text-slate-500 ml-1">(separados por comas)</span></label>
+                    <input type="text" id="member-tags" placeholder="React, Node.js, Figma"
+                        class="w-full bg-slate-50 dark:bg-black/20 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all">
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-200">URL de Avatar <span
+                            class="text-xs font-normal text-slate-500 ml-1">(Opcional)</span></label>
+                    <input type="url" id="member-image" placeholder="https://..."
+                        class="w-full bg-slate-50 dark:bg-black/20 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all">
+                </div>
+
+                <div class="flex gap-3 pt-6 border-t border-slate-100 dark:border-slate-800 mt-6">
+                    <button type="button" id="btn-delete-member"
+                        class="hidden px-4 py-2.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg text-sm font-semibold hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors">
+                        Eliminar
+                    </button>
+                    <div class="flex-1"></div>
+                    <button type="button" onclick="closeMemberModal()"
+                        class="px-5 py-2.5 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="submit"
+                        class="px-6 py-2.5 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/25">
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

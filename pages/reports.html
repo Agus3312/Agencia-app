@@ -1,0 +1,390 @@
+<div class="p-6 animate-enter h-full">
+
+    <!-- Page Header -->
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Reportes de Proyectos</h2>
+            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Vista Kanban de todos los proyectos activos</p>
+        </div>
+        <button
+            class="flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-lg shadow-primary/20">
+            <span class="material-symbols-outlined text-sm">download</span>
+            Exportar PDF
+        </button>
+    </div>
+
+    <!-- Kanban Board -->
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5" style="align-items: start;">
+
+        <!-- Column: Análisis -->
+        <div class="flex flex-col gap-3">
+            <!-- Column Header -->
+            <div class="flex items-center justify-between px-1">
+                <div class="flex items-center gap-2">
+                    <div class="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
+                    <span
+                        class="text-xs font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">Análisis</span>
+                </div>
+                <span class="text-xs font-bold bg-blue-500/15 text-blue-500 px-2 py-0.5 rounded-full">14</span>
+            </div>
+            <!-- Column Body -->
+            <div
+                class="bg-blue-500/5 dark:bg-blue-500/[0.07] border border-blue-200 dark:border-blue-900/50 rounded-xl p-3 flex flex-col gap-3 min-h-[480px]">
+
+                <!-- Card -->
+                <div
+                    class="bg-white dark:bg-slate-900 rounded-lg p-4 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-start justify-between mb-3">
+                        <span class="text-xs font-mono text-slate-400">ID-23081</span>
+                        <span
+                            class="text-[10px] font-bold bg-blue-500/10 text-blue-500 px-2 py-0.5 rounded">Análisis</span>
+                    </div>
+                    <h4 class="font-bold text-sm text-slate-900 dark:text-slate-100 mb-3 leading-snug">Auditoría de
+                        Seguridad IT</h4>
+                    <div class="flex items-center gap-2 mb-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5DAxvnn1kZzbkaqJFoCdq3MWXEbuS8E-_xcuZn3c35BIh0gwco6MV3IkobUyKySQGl9QieeUZQMWcDgFgAUhDafepLbLvz0CceKFQaRI_L5Od1FXJ2f316w3UPXUmSYrK_2oDH8KpgDgNIcAZqOjgccf3a6GXd-65uD26rfWrb8zjuxyC1FPVm1pULrbdLQXDZAzMQvKbFKn8tJvambhRQUhUfU11DPze_XPBTY7zVfvZZQI65LUH6k_pXTURzoictamOkE2jIl8"
+                            class="size-5 rounded-full object-cover" alt="Líder" />
+                        <span class="text-xs text-slate-500 dark:text-slate-400">Elena Soler</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-500 rounded-full" style="width:15%"></div>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-500">15%</span>
+                    </div>
+                    <div class="flex items-center gap-1 mt-3 text-slate-400">
+                        <span class="material-symbols-outlined text-xs" style="font-size:13px">calendar_today</span>
+                        <span class="text-[11px]">15 Nov 2024</span>
+                    </div>
+                </div>
+
+                <!-- Card -->
+                <div
+                    class="bg-white dark:bg-slate-900 rounded-lg p-4 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-start justify-between mb-3">
+                        <span class="text-xs font-mono text-slate-400">ID-23089</span>
+                        <span
+                            class="text-[10px] font-bold bg-blue-500/10 text-blue-500 px-2 py-0.5 rounded">Análisis</span>
+                    </div>
+                    <h4 class="font-bold text-sm text-slate-900 dark:text-slate-100 mb-3 leading-snug">Integración ERP
+                        SAP</h4>
+                    <div class="flex items-center gap-2 mb-3">
+                        <div
+                            class="size-5 rounded-full bg-blue-200 dark:bg-blue-900 flex items-center justify-center text-[9px] font-bold text-blue-600 dark:text-blue-300">
+                            LR</div>
+                        <span class="text-xs text-slate-500 dark:text-slate-400">Luis Ramos</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-500 rounded-full" style="width:8%"></div>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-500">8%</span>
+                    </div>
+                    <div class="flex items-center gap-1 mt-3 text-slate-400">
+                        <span class="material-symbols-outlined text-xs" style="font-size:13px">calendar_today</span>
+                        <span class="text-[11px]">20 Dic 2024</span>
+                    </div>
+                </div>
+
+                <!-- Card -->
+                <div
+                    class="bg-white dark:bg-slate-900 rounded-lg p-4 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-start justify-between mb-3">
+                        <span class="text-xs font-mono text-slate-400">ID-23095</span>
+                        <span
+                            class="text-[10px] font-bold bg-blue-500/10 text-blue-500 px-2 py-0.5 rounded">Análisis</span>
+                    </div>
+                    <h4 class="font-bold text-sm text-slate-900 dark:text-slate-100 mb-3 leading-snug">Rediseño UX
+                        Portal Clientes</h4>
+                    <div class="flex items-center gap-2 mb-3">
+                        <div
+                            class="size-5 rounded-full bg-purple-200 dark:bg-purple-900 flex items-center justify-center text-[9px] font-bold text-purple-600 dark:text-purple-300">
+                            MP</div>
+                        <span class="text-xs text-slate-500 dark:text-slate-400">María Paz</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-500 rounded-full" style="width:5%"></div>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-500">5%</span>
+                    </div>
+                    <div class="flex items-center gap-1 mt-3 text-slate-400">
+                        <span class="material-symbols-outlined text-xs" style="font-size:13px">calendar_today</span>
+                        <span class="text-[11px]">05 Ene 2025</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Column: En Proceso -->
+        <div class="flex flex-col gap-3">
+            <div class="flex items-center justify-between px-1">
+                <div class="flex items-center gap-2">
+                    <div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">En
+                        Proceso</span>
+                </div>
+                <span class="text-xs font-bold bg-amber-500/15 text-amber-500 px-2 py-0.5 rounded-full">28</span>
+            </div>
+            <div
+                class="bg-amber-500/5 dark:bg-amber-500/[0.07] border border-amber-200 dark:border-amber-900/50 rounded-xl p-3 flex flex-col gap-3 min-h-[480px]">
+
+                <!-- Card -->
+                <div
+                    class="bg-white dark:bg-slate-900 rounded-lg p-4 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-start justify-between mb-3">
+                        <span class="text-xs font-mono text-slate-400">ID-23049</span>
+                        <span class="text-[10px] font-bold bg-amber-500/10 text-amber-500 px-2 py-0.5 rounded">En
+                            Proceso</span>
+                    </div>
+                    <h4 class="font-bold text-sm text-slate-900 dark:text-slate-100 mb-3 leading-snug">Rediseño Web
+                        Corporativa</h4>
+                    <div class="flex items-center gap-2 mb-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDx2M1vJMKJu2aczZLjzYoNZjBzDTiqTD3nAEHQ9Hg3-2JmiBaJi3Fcgbx5i9FNniAuloULR8ktExwAi-W_v5RvsJ8ppCmEv7bS-78jKNEvJsY4Db4WYRymbLABJK2Kdtxismf9gRY0hi1LzGYRLjqQoXvmfwfEodCS0fV2q-rZOgZqhlce91hCpsqa74pztffVaqVzq-hT8T2SBNAjNAdxwyHmb2HIKbsUmT5qt3IekFwFjIUAXDDtEOxM3ym2cwSl3mJvV0MkO-c"
+                            class="size-5 rounded-full object-cover" alt="Líder" />
+                        <span class="text-xs text-slate-500 dark:text-slate-400">Ana Martínez</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-amber-500 rounded-full" style="width:65%"></div>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-500">65%</span>
+                    </div>
+                    <div class="flex items-center gap-1 mt-3 text-slate-400">
+                        <span class="material-symbols-outlined text-xs" style="font-size:13px">calendar_today</span>
+                        <span class="text-[11px]">12 Oct 2024</span>
+                    </div>
+                </div>
+
+                <!-- Card -->
+                <div
+                    class="bg-white dark:bg-slate-900 rounded-lg p-4 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-start justify-between mb-3">
+                        <span class="text-xs font-mono text-slate-400">ID-23061</span>
+                        <span class="text-[10px] font-bold bg-amber-500/10 text-amber-500 px-2 py-0.5 rounded">En
+                            Proceso</span>
+                    </div>
+                    <h4 class="font-bold text-sm text-slate-900 dark:text-slate-100 mb-3 leading-snug">Campaña Marketing
+                        Digital</h4>
+                    <div class="flex items-center gap-2 mb-3">
+                        <div
+                            class="size-5 rounded-full bg-amber-200 dark:bg-amber-900 flex items-center justify-center text-[9px] font-bold text-amber-700 dark:text-amber-300">
+                            CG</div>
+                        <span class="text-xs text-slate-500 dark:text-slate-400">Carlos García</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-amber-500 rounded-full" style="width:48%"></div>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-500">48%</span>
+                    </div>
+                    <div class="flex items-center gap-1 mt-3 text-slate-400">
+                        <span class="material-symbols-outlined text-xs" style="font-size:13px">calendar_today</span>
+                        <span class="text-[11px]">05 Nov 2024</span>
+                    </div>
+                </div>
+
+                <!-- Card -->
+                <div
+                    class="bg-white dark:bg-slate-900 rounded-lg p-4 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-start justify-between mb-3">
+                        <span class="text-xs font-mono text-slate-400">ID-23073</span>
+                        <span class="text-[10px] font-bold bg-amber-500/10 text-amber-500 px-2 py-0.5 rounded">En
+                            Proceso</span>
+                    </div>
+                    <h4 class="font-bold text-sm text-slate-900 dark:text-slate-100 mb-3 leading-snug">Desarrollo API
+                        Pagos v3</h4>
+                    <div class="flex items-center gap-2 mb-3">
+                        <div
+                            class="size-5 rounded-full bg-emerald-200 dark:bg-emerald-900 flex items-center justify-center text-[9px] font-bold text-emerald-700 dark:text-emerald-300">
+                            DV</div>
+                        <span class="text-xs text-slate-500 dark:text-slate-400">Diego Vargas</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-amber-500 rounded-full" style="width:80%"></div>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-500">80%</span>
+                    </div>
+                    <div class="flex items-center gap-1 mt-3 text-slate-400">
+                        <span class="material-symbols-outlined text-xs" style="font-size:13px">calendar_today</span>
+                        <span class="text-[11px]">30 Oct 2024</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Column: En Pausa -->
+        <div class="flex flex-col gap-3">
+            <div class="flex items-center justify-between px-1">
+                <div class="flex items-center gap-2">
+                    <div class="w-2.5 h-2.5 rounded-full bg-rose-500"></div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">En
+                        Pausa</span>
+                </div>
+                <span class="text-xs font-bold bg-rose-500/15 text-rose-500 px-2 py-0.5 rounded-full">06</span>
+            </div>
+            <div
+                class="bg-rose-500/5 dark:bg-rose-500/[0.07] border border-rose-200 dark:border-rose-900/50 rounded-xl p-3 flex flex-col gap-3 min-h-[480px]">
+
+                <!-- Card -->
+                <div
+                    class="bg-white dark:bg-slate-900 rounded-lg p-4 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-start justify-between mb-3">
+                        <span class="text-xs font-mono text-slate-400">ID-23092</span>
+                        <span class="text-[10px] font-bold bg-rose-500/10 text-rose-500 px-2 py-0.5 rounded">En
+                            Pausa</span>
+                    </div>
+                    <h4 class="font-bold text-sm text-slate-900 dark:text-slate-100 mb-3 leading-snug">App Fidelización
+                        v2</h4>
+                    <div class="flex items-center gap-2 mb-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPPwniump_FPwQtNKA2Dh29B-LVsam7MEMkEZgnpbZQPAwZbHni_HfgRWrik-4tNdTGcMJjtRPVkyBL7p1Xkom3N69B27udg5oXifz3IsnodGno9wkMMslw6WOi-ttbUid5DprwBTRxGjdY4riR0KuSwu2rz-AyhQeXkk0iq85Wrpto2xgsykvGLHPh062kj3g5499eXgOUUFh6Xd_vgCkVzcszsoZ11yzDOa1OKgEznGVSZcu7j6Lq8rUWo2PGvdkG-ZdcUdScoE"
+                            class="size-5 rounded-full object-cover" alt="Líder" />
+                        <span class="text-xs text-slate-500 dark:text-slate-400">Mateo Vera</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-rose-500 rounded-full" style="width:40%"></div>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-500">40%</span>
+                    </div>
+                    <div class="flex items-center gap-1 mt-3 text-slate-400">
+                        <span class="material-symbols-outlined text-xs" style="font-size:13px">calendar_today</span>
+                        <span class="text-[11px]">05 Oct 2024</span>
+                    </div>
+                </div>
+
+                <!-- Card -->
+                <div
+                    class="bg-white dark:bg-slate-900 rounded-lg p-4 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-start justify-between mb-3">
+                        <span class="text-xs font-mono text-slate-400">ID-23077</span>
+                        <span class="text-[10px] font-bold bg-rose-500/10 text-rose-500 px-2 py-0.5 rounded">En
+                            Pausa</span>
+                    </div>
+                    <h4 class="font-bold text-sm text-slate-900 dark:text-slate-100 mb-3 leading-snug">Chatbot Soporte
+                        IA</h4>
+                    <div class="flex items-center gap-2 mb-3">
+                        <div
+                            class="size-5 rounded-full bg-rose-200 dark:bg-rose-900 flex items-center justify-center text-[9px] font-bold text-rose-700 dark:text-rose-300">
+                            SN</div>
+                        <span class="text-xs text-slate-500 dark:text-slate-400">Sofía Nieto</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-rose-500 rounded-full" style="width:22%"></div>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-500">22%</span>
+                    </div>
+                    <div class="flex items-center gap-1 mt-3 text-slate-400">
+                        <span class="material-symbols-outlined text-xs" style="font-size:13px">calendar_today</span>
+                        <span class="text-[11px]">18 Nov 2024</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Column: Finalizada -->
+        <div class="flex flex-col gap-3">
+            <div class="flex items-center justify-between px-1">
+                <div class="flex items-center gap-2">
+                    <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+                    <span
+                        class="text-xs font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">Finalizada</span>
+                </div>
+                <span class="text-xs font-bold bg-emerald-500/15 text-emerald-500 px-2 py-0.5 rounded-full">42</span>
+            </div>
+            <div
+                class="bg-emerald-500/5 dark:bg-emerald-500/[0.07] border border-emerald-200 dark:border-emerald-900/50 rounded-xl p-3 flex flex-col gap-3 min-h-[480px]">
+
+                <!-- Card -->
+                <div
+                    class="bg-white dark:bg-slate-900 rounded-lg p-4 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-start justify-between mb-3">
+                        <span class="text-xs font-mono text-slate-400">ID-23055</span>
+                        <span
+                            class="text-[10px] font-bold bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded">Finalizada</span>
+                    </div>
+                    <h4 class="font-bold text-sm text-slate-900 dark:text-slate-100 mb-3 leading-snug">Migración Cloud
+                        AWS</h4>
+                    <div class="flex items-center gap-2 mb-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdKweLgpTgbtUX3LH1hiiF8HKhKjhbK7ryoLCbxsYrbP5bqTHF4ZDEgWzJWEymCpti_CK1WE7el4beNukj4aNPqJ8KyR8LgiB77k-NIvhrs0DMuNgJ19yI1VOuV-tTTg5fOTtnoclyp8XBLjtnFBd094-Gzal4lCkOa777uYrfSFIuJa_F_GYkYMJmhJW1qKOEys2ZxBBzcvSQTFo7LrmSX7nLzsRH3LzrGUISkatA_cwY1sicttQnUbHpdI_pSeq-jky200RhRbs"
+                            class="size-5 rounded-full object-cover" alt="Líder" />
+                        <span class="text-xs text-slate-500 dark:text-slate-400">Jorge Ruiz</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-emerald-500 rounded-full" style="width:100%"></div>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-500">100%</span>
+                    </div>
+                    <div class="flex items-center gap-1 mt-3 text-slate-400">
+                        <span class="material-symbols-outlined text-xs" style="font-size:13px">calendar_today</span>
+                        <span class="text-[11px]">01 Sep 2024</span>
+                    </div>
+                </div>
+
+                <!-- Card -->
+                <div
+                    class="bg-white dark:bg-slate-900 rounded-lg p-4 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-start justify-between mb-3">
+                        <span class="text-xs font-mono text-slate-400">ID-23040</span>
+                        <span
+                            class="text-[10px] font-bold bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded">Finalizada</span>
+                    </div>
+                    <h4 class="font-bold text-sm text-slate-900 dark:text-slate-100 mb-3 leading-snug">Lanzamiento
+                        E-commerce</h4>
+                    <div class="flex items-center gap-2 mb-3">
+                        <div
+                            class="size-5 rounded-full bg-emerald-200 dark:bg-emerald-900 flex items-center justify-center text-[9px] font-bold text-emerald-700 dark:text-emerald-300">
+                            RT</div>
+                        <span class="text-xs text-slate-500 dark:text-slate-400">Rodrigo Torres</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-emerald-500 rounded-full" style="width:100%"></div>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-500">100%</span>
+                    </div>
+                    <div class="flex items-center gap-1 mt-3 text-slate-400">
+                        <span class="material-symbols-outlined text-xs" style="font-size:13px">calendar_today</span>
+                        <span class="text-[11px]">20 Ago 2024</span>
+                    </div>
+                </div>
+
+                <!-- Card -->
+                <div
+                    class="bg-white dark:bg-slate-900 rounded-lg p-4 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-start justify-between mb-3">
+                        <span class="text-xs font-mono text-slate-400">ID-23028</span>
+                        <span
+                            class="text-[10px] font-bold bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded">Finalizada</span>
+                    </div>
+                    <h4 class="font-bold text-sm text-slate-900 dark:text-slate-100 mb-3 leading-snug">Automatización
+                        Facturación</h4>
+                    <div class="flex items-center gap-2 mb-3">
+                        <div
+                            class="size-5 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[9px] font-bold text-slate-600 dark:text-slate-300">
+                            PL</div>
+                        <span class="text-xs text-slate-500 dark:text-slate-400">Paula López</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-emerald-500 rounded-full" style="width:100%"></div>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-500">100%</span>
+                    </div>
+                    <div class="flex items-center gap-1 mt-3 text-slate-400">
+                        <span class="material-symbols-outlined text-xs" style="font-size:13px">calendar_today</span>
+                        <span class="text-[11px]">10 Jul 2024</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>

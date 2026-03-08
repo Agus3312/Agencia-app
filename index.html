@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Admin Dashboard - Agencia Management</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1d3faf',
+                        'background-light': '#f6f6f8',
+                        'background-dark': '#0f172a',
+                        'surface-dark': '#1e293b',
+                        'border-dark': '#334155'
+                    },
+                    fontFamily: {
+                        'display': ['Inter', 'sans-serif'],
+                        'sans': ['Inter', 'sans-serif']
+                    },
+                    borderRadius: {
+                        'DEFAULT': '0.25rem',
+                        'lg': '0.5rem',
+                        'xl': '0.75rem'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <!-- Global Styles -->
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 h-screen flex overflow-hidden">
+    <!-- Sidebar Container -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 ml-64 flex flex-col min-w-0 h-screen overflow-hidden">
+        <!-- Header Container -->
+        <div id="header-container"></div>
+
+        <!-- Pages Container (scrollable) -->
+        <div id="pages-container" class="flex-1 overflow-y-auto"></div>
+    </main>
+
+    <!-- Scripts: Utilities (load first — no dependencies) -->
+    <script src="js/utils/helpers.js"></script>
+    <script src="js/utils/EventBus.js"></script>
+    <script src="js/utils/StorageAdapter.js"></script>
+    <script src="js/utils/Toast.js"></script>
+    <script src="js/utils/ApiAdapter.js"></script>
+
+    <!-- Scripts: Services (depend on StorageAdapter + EventBus + ApiAdapter) -->
+    <script src="js/services/AuthService.js"></script>
+
+    <!-- Scripts: Components (depend on AuthService) -->
+    <script src="js/components/sidebar.js"></script>
+    <script src="js/components/header.js"></script>
+
+    <!-- Scripts: App core -->
+    <script src="js/router.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
