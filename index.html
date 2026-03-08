@@ -45,7 +45,7 @@
     <!-- Global Styles -->
     <link rel="stylesheet" href="css/theme.css">
     <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/components.css?v=2">
 </head>
 
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 h-screen flex overflow-hidden">
@@ -71,27 +71,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- Scripts: Utilities (load first — no dependencies) -->
-    <script src="js/utils/helpers.js"></script>
+    <script src="js/utils/helpers.js?v=2"></script>
     <script src="js/utils/EventBus.js"></script>
     <script src="js/utils/StorageAdapter.js"></script>
     <script src="js/utils/Toast.js"></script>
-    <script src="js/utils/ApiAdapter.js"></script>
+    <script src="js/utils/ApiAdapter.js?v=2"></script>
 
     <!-- Scripts: Pages -->
-    <script src="js/pages/projects.js"></script>
-    <script src="js/pages/project-create.js"></script>
-    <script src="js/pages/project-detail.js"></script>
+    <script src="js/pages/projects.js?v=2"></script>
+    <script src="js/pages/project-create.js?v=2"></script>
+    <script src="js/pages/project-detail.js?v=2"></script>
+    <script src="js/pages/myspace.js?v=2"></script>
 
     <!-- Scripts: Services (depend on StorageAdapter + EventBus + ApiAdapter) -->
     <script src="js/services/AuthService.js"></script>
 
     <!-- Scripts: Components (depend on AuthService) -->
-    <script src="js/components/sidebar.js"></script>
-    <script src="js/components/topbar.js"></script>
+    <script src="js/components/sidebar.js?v=2"></script>
+    <script src="js/components/topbar.js?v=2"></script>
 
     <!-- Scripts: App core -->
-    <script src="js/router.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/router.js?v=2"></script>
+    <script src="js/app.js?v=2"></script>
 </body>
 
 </html>

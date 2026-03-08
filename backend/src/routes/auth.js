@@ -183,4 +183,43 @@ router.get('/me', authMiddleware, async (req, res, next) => {
     }
 });
 
+// ── POST /api/auth/change-password ──────────────────────────────────────
+router.post('/change-password', authMiddleware, async (req, res, next) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ error: 'La contraseña actual y la nueva son requeridas' });
+        }
+
+        // Find user
+        const user = await prisma.user.findUnique({ where: { id: req.userId } });
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        // Check current password
+        const valid = await bcrypt.compare(currentPassword, user.password);
+        if (!valid) {
+            return res.status(401).json({ error: 'La contraseña actual es incorrecta' });
+        }
+
+        // Hash new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Update password
+        await prisma.user.update({
+            where: { id: user.id },
+            data: { password: hashedPassword }
+        });
+
+        // Log activity
+        await logActivity(user.id, 'password_changed', 'cambió su contraseña', '');
+
+        res.json({ message: 'Contraseña actualizada correctamente' });
+    } catch (err) {
+        next(err);
+    }
+});
+
 module.exports = router;

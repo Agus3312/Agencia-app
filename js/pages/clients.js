@@ -63,11 +63,13 @@ const ClientsPage = {
         if (filtered.length === 0) {
             container.classList.add('hidden');
             emptyState.classList.remove('hidden');
+            emptyState.style.display = 'flex';
             return;
         }
 
         container.classList.remove('hidden');
         emptyState.classList.add('hidden');
+        emptyState.style.display = '';
 
         if (this.viewMode === 'grid') {
             container.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-enter";
@@ -82,9 +84,12 @@ const ClientsPage = {
         const projectCount = c._count?.projects || 0;
         return `
             <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 hover:shadow-xl hover:shadow-slate-200/50 dark:hover:shadow-black/20 transition-all group relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div class="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
                     <button onclick="ClientsPage.openEditModal('${c.id}')" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-primary transition-colors">
                         <span class="material-symbols-outlined text-sm">edit</span>
+                    </button>
+                    <button onclick="ClientsPage.deleteClient('${c.id}')" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-red-500 transition-colors">
+                        <span class="material-symbols-outlined text-sm">delete</span>
                     </button>
                 </div>
 

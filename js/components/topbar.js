@@ -26,11 +26,7 @@ const TopBar = {
                     <span class="material-symbols-outlined">menu</span>
                 </button>
 
-                <div class="global-search flex-1 lg:flex-none">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px] pointer-events-none">search</span>
-                    <input type="text" id="global-search-input" placeholder="Buscar en el espacio de trabajo..." />
-                    <span class="shortcut">Ctrl K</span>
-                </div>
+                <div class="flex-1 lg:flex-none"></div>
                 
                 <div class="topbar-controls">
                     <!-- Notifications -->
@@ -94,21 +90,25 @@ const TopBar = {
         if (mobileMenuBtn && sidebarContainer) {
             mobileMenuBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                // We toggle fixed positioning and visibility classes
+                // Turns container into a full-screen overlay
                 sidebarContainer.classList.toggle('hidden');
                 sidebarContainer.classList.toggle('fixed');
-                sidebarContainer.classList.toggle('inset-y-0');
-                sidebarContainer.classList.toggle('left-0');
-                sidebarContainer.classList.toggle('w-64');
-                sidebarContainer.classList.toggle('shadow-2xl');
+                sidebarContainer.classList.toggle('inset-0');
+                sidebarContainer.classList.toggle('bg-black/50');
+                sidebarContainer.classList.toggle('backdrop-blur-[2px]');
+                sidebarContainer.classList.toggle('z-[100]');
+                const aside = sidebarContainer.querySelector('.sidebar');
+                if (aside) aside.classList.toggle('open');
             });
 
             // Close sidebar when clicking outside on mobile
             document.addEventListener('click', (e) => {
                 if (window.innerWidth < 1024) {
-                    if (!sidebarContainer.classList.contains('hidden') && !sidebarContainer.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                    const aside = sidebarContainer.querySelector('.sidebar');
+                    if (!sidebarContainer.classList.contains('hidden') && aside && !aside.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
                         sidebarContainer.classList.add('hidden');
-                        sidebarContainer.classList.remove('fixed', 'inset-y-0', 'left-0', 'w-64', 'shadow-2xl');
+                        sidebarContainer.classList.remove('fixed', 'inset-0', 'bg-black/50', 'backdrop-blur-[2px]', 'z-[100]');
+                        aside.classList.remove('open');
                     }
                 }
             });
@@ -131,16 +131,7 @@ const TopBar = {
             });
         }
 
-        // Search logic
-        const searchInput = container.querySelector('#global-search-input');
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                const query = e.target.value.trim().toLowerCase();
-                if (window.EventBus) {
-                    window.EventBus.emit('global:search', query);
-                }
-            });
-        }
+
 
         // Notification dropdown logic
         const notifBtn = container.querySelector('#notif-btn');

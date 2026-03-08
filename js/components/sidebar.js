@@ -138,7 +138,9 @@ const Sidebar = {
                     const sidebarContainer = document.getElementById('sidebar-container');
                     if (sidebarContainer && !sidebarContainer.classList.contains('hidden')) {
                         sidebarContainer.classList.add('hidden');
-                        sidebarContainer.classList.remove('fixed', 'inset-y-0', 'left-0', 'w-64', 'shadow-2xl');
+                        sidebarContainer.classList.remove('fixed', 'inset-0', 'bg-black/50', 'backdrop-blur-[2px]', 'z-[100]');
+                        const aside = sidebarContainer.querySelector('.sidebar');
+                        if (aside) aside.classList.remove('open');
                     }
                 }
             });

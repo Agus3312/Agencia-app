@@ -30,6 +30,8 @@ window.MySpacePage = {
             await this.renderTasks(content);
         } else if (tabId === 'notes') {
             await this.renderNotes(content);
+        } else if (tabId === 'security') {
+            await this.renderSecurity(content);
         }
     },
 
@@ -171,6 +173,79 @@ window.MySpacePage = {
                 </div>
             </div>
         `;
+    },
+
+    async renderSecurity(container) {
+        container.innerHTML = `
+            <div class="max-w-2xl mx-auto fade-in">
+                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden mb-6">
+                    <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+                        <h3 class="font-bold text-lg flex items-center gap-2">
+                            <span class="material-symbols-outlined text-slate-400">key</span>
+                            Cambiar Contraseña
+                        </h3>
+                        <p class="text-xs text-slate-500 mt-1">Es recomendable actualizar tu contraseña frecuentemente.</p>
+                    </div>
+                    <form id="change-password-form" onsubmit="MySpacePage.changePassword(event)" class="p-6 space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1.5 ml-1">Contraseña Actual *</label>
+                            <input type="password" id="current-password" required
+                                class="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1.5 ml-1">Nueva Contraseña *</label>
+                            <input type="password" id="new-password" required
+                                class="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1.5 ml-1">Confirmar Nueva Contraseña *</label>
+                            <input type="password" id="confirm-password" required
+                                class="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all dark:text-white">
+                        </div>
+                        <div class="pt-4 border-t border-slate-100 dark:border-slate-800">
+                            <button id="btn-change-password" type="submit" class="px-6 py-2.5 bg-primary hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2">
+                                <span id="pwd-btn-text">Actualizar Contraseña</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        `;
+    },
+
+    async changePassword(e) {
+        e.preventDefault();
+        const currentPassword = document.getElementById('current-password').value;
+        const newPassword = document.getElementById('new-password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+
+        if (newPassword !== confirmPassword) {
+            Toast.error('Las nuevas contraseñas no coinciden');
+            return;
+        }
+
+        if (newPassword.length < 6) {
+            Toast.error('La contraseña debe tener al menos 6 caracteres');
+            return;
+        }
+
+        const btn = document.getElementById('btn-change-password');
+        const btnText = document.getElementById('pwd-btn-text');
+        const originalText = btnText.innerText;
+        
+        btn.disabled = true;
+        btnText.innerHTML = '<span class="material-symbols-outlined text-base animate-spin">sync</span> Validando...';
+
+        try {
+            const data = await ApiAdapter.post('/api/auth/change-password', { currentPassword, newPassword });
+            Toast.success(data.message || 'Contraseña actualizada. Inicia sesión en tus dispositivos.');
+            document.getElementById('change-password-form').reset();
+        } catch (error) {
+            Toast.error(error.message || 'Error al cambiar la contraseña');
+        } finally {
+            btn.disabled = false;
+            btnText.innerText = originalText;
+        }
     },
 
     showTaskMenu(e, id) {

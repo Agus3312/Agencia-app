@@ -73,8 +73,21 @@ window.AdminPage = {
     },
 
     // ─── TAB: Gestión de Usuarios ───────────────────────────────────────────
-    renderUsers() {
+    async renderUsers() {
         const members = TeamService.getAll();
+        let teamsRaw = await TeamService.fetchTeams() || [];
+        let teamNames = teamsRaw.map(t => t.name);
+        
+        // Ensure that members' actual teams are in the list just in case
+        members.forEach(m => {
+            if (m.team && !teamNames.includes(m.team)) {
+                teamNames.push(m.team);
+            }
+        });
+        
+        // Sort team names
+        teamNames.sort();
+
         const rows = members.map(m => {
             const isAdmin = m.team === 'Management' || m.role === 'Admin';
             return `
@@ -96,7 +109,7 @@ window.AdminPage = {
                     <td class="px-6 py-4">
                         <select onchange="AdminPage.updateField('${m.id}', 'team', this.value)"
                             class="bg-transparent text-sm text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 focus:border-primary outline-none transition-colors">
-                            ${['Frontend', 'Backend', 'Design', 'Management'].map(t =>
+                            ${teamNames.map(t =>
                 `<option value="${t}" ${m.team === t ? 'selected' : ''}>${t}</option>`
             ).join('')}
                         </select>
@@ -178,7 +191,15 @@ window.AdminPage = {
 
     // ─── TAB: Crear Usuario ─────────────────────────────────────────────────
     async renderCreateUser() {
-        const teams = await TeamService.fetchTeams() || [];
+        const teamMetadata = await TeamService.fetchTeams() || [];
+        const members = await TeamService.fetchAll() || [];
+        let teamNames = teamMetadata.map(t => t.name);
+        members.forEach(m => {
+            if (m.team && !teamNames.includes(m.team)) {
+                teamNames.push(m.team);
+            }
+        });
+        teamNames.sort();
 
         return `
             <div class="max-w-lg">
@@ -206,7 +227,7 @@ window.AdminPage = {
                             <select id="new-team" required
                                 class="w-full bg-slate-50 dark:bg-black/20 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all">
                                 <option value="">Seleccione un equipo...</option>
-                                ${teams.map(t => `<option value="${t.name}">${t.name}</option>`).join('')}
+                                ${teamNames.map(name => `<option value="${name}">${name}</option>`).join('')}
                             </select>
                             <p class="text-xs text-slate-400 mt-1">Para crear un equipo nuevo, hágalo desde la pestaña "Equipos".</p>
                         </div>

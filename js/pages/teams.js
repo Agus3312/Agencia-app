@@ -4,7 +4,7 @@
  */
 
 // Global functions for HTML event handlers
-window.openMemberModal = (memberId = null) => {
+window.openMemberModal = async (memberId = null) => {
     const modal = document.getElementById('member-modal');
     const form = document.getElementById('member-form');
     const title = document.getElementById('modal-title');
@@ -13,6 +13,11 @@ window.openMemberModal = (memberId = null) => {
     form.reset();
     document.getElementById('member-id').value = '';
     const deleteBtn = document.getElementById('btn-delete-member');
+
+    // Crucial: Populate team select before setting fields!
+    if (window.TeamsPage) {
+        await window.TeamsPage.populateTeamSelect();
+    }
 
     if (memberId) {
         title.textContent = 'Editar Miembro';
@@ -131,9 +136,21 @@ window.TeamsPage = {
     async populateTeamSelect() {
         const select = document.getElementById('member-team');
         if (!select) return;
-        const teams = await TeamService.fetchTeams() || [];
+        
+        let teamMetadata = await TeamService.fetchTeams() || [];
+        let members = await TeamService.fetchAll() || [];
+        
+        // Collect unique team names
+        let teamNames = teamMetadata.map(t => t.name);
+        members.forEach(m => {
+            if (m.team && !teamNames.includes(m.team)) {
+                teamNames.push(m.team);
+            }
+        });
+        teamNames.sort();
+
         select.innerHTML = '<option value="">Seleccione un equipo...</option>' + 
-            teams.map(t => `<option value="${t.name}">${t.name}</option>`).join('');
+            teamNames.map(name => `<option value="${name}">${name}</option>`).join('');
     },
 
     onSearch(value) {
@@ -160,11 +177,7 @@ window.TeamsPage = {
         }
 
         // Apply Logic Filters
-        if (this.currentFilter === 'departments') {
-            // Use metadata
-        } else if (this.currentFilter === 'projects') {
-            members = members.filter(m => m.tags && m.tags.length > 0);
-        }
+        // Filters removed from UI
 
         // Group members by team
         const teams = members.reduce((acc, member) => {
@@ -319,27 +332,12 @@ window.TeamsPage = {
     },
 
     setupFilters() {
-        const buttons = document.querySelectorAll('.px-8.border-t button');
-        // 0: All Teams, 1: Departments, 2: Active Projects
-
-        if (buttons.length >= 3) {
-            buttons[0].onclick = () => this.setFilter('all', buttons[0]);
-            buttons[1].onclick = () => this.setFilter('departments', buttons[1]);
-            buttons[2].onclick = () => this.setFilter('projects', buttons[2]);
-        }
+        // Obsolete as tabs were removed, kept structure if needed later
     },
 
     async setFilter(filterType, activeButton) {
         this.currentFilter = filterType;
         await this.renderTeams();
-
-        // Update styling
-        const buttons = document.querySelectorAll('.px-8.border-t button');
-        buttons.forEach(btn => {
-            btn.className = 'pb-4 border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-medium text-sm transition-all';
-        });
-
-        activeButton.className = 'pb-4 border-b-2 border-primary text-primary font-semibold text-sm transition-all';
     },
 
     setupEventListeners() {

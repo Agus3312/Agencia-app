@@ -65,49 +65,6 @@ window.DashboardPage = {
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 fade-in">
-                <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 relative overflow-hidden group">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Salud General</span>
-                        <span class="material-symbols-outlined text-emerald-500 text-sm">verified</span>
-                    </div>
-                    <div class="flex items-end gap-2">
-                        <span class="text-2xl font-bold text-slate-900 dark:text-white">92%</span>
-                        <span class="text-[10px] font-medium text-emerald-500 mb-1">+4% vs ayer</span>
-                    </div>
-                    <div class="mt-3 h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                        <div class="h-full bg-emerald-500 rounded-full" style="width: 92%"></div>
-                    </div>
-                </div>
-                
-                <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 relative overflow-hidden group">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Tareas Críticas</span>
-                        <span class="material-symbols-outlined text-rose-500 text-sm">priority_high</span>
-                    </div>
-                    <div class="flex items-end gap-2">
-                        <span class="text-2xl font-bold text-slate-900 dark:text-white">${myTasks.filter(t => t.priority === 'high' || t.priority === 'urgent').length}</span>
-                        <span class="text-[10px] font-medium text-slate-500 mb-1">requieren acción</span>
-                    </div>
-                    <div class="mt-3 h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                        <div class="h-full bg-rose-500 rounded-full" style="width: 40%"></div>
-                    </div>
-                </div>
-
-                <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 relative overflow-hidden group">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Próximos Días</span>
-                        <span class="material-symbols-outlined text-blue-500 text-sm">event</span>
-                    </div>
-                    <div class="flex items-end gap-2">
-                        <span class="text-2xl font-bold text-slate-900 dark:text-white">${myTasks.filter(t => t.dueLabel === 'Hoy' || t.dueLabel === 'Mañana').length}</span>
-                        <span class="text-[10px] font-medium text-slate-500 mb-1">vencimientos</span>
-                    </div>
-                    <div class="mt-3 h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                        <div class="h-full bg-blue-500 rounded-full" style="width: 65%"></div>
-                    </div>
-                </div>
-            </div>
 
             <div class="mb-6 fade-in">
                 <div class="flex items-center justify-between mb-3">
