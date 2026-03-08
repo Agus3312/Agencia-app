@@ -279,21 +279,124 @@ window.ProjectDetailPage = {
 
             <!-- Team Sidebar -->
             <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 h-fit">
-                <h3 class="font-bold text-lg mb-4">Equipo Asignado</h3>
-                <div class="space-y-3">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-lg">Equipo Asignado</h3>
+                    ${AuthService.isAdmin() ? `
+                    <button onclick="ProjectDetailPage.toggleAddMember()"
+                        id="add-member-btn"
+                        class="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary/10 text-primary text-xs font-bold hover:bg-primary hover:text-white transition-all">
+                        <span class="material-symbols-outlined text-sm">person_add</span> Agregar
+                    </button>` : ''}
+                </div>
+
+                <!-- Add member panel (hidden by default) -->
+                ${AuthService.isAdmin() ? `
+                <div id="add-member-panel" class="hidden mb-4 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Agregar por equipo o persona</p>
+                    <select id="add-member-mode" onchange="ProjectDetailPage.onAddMemberModeChange()" 
+                        class="w-full text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-primary/40">
+                        <option value="">Seleccionar modo...</option>
+                        <option value="team">Agregar equipo completo</option>
+                        <option value="individual">Agregar persona individual</option>
+                    </select>
+                    <select id="add-member-value" class="hidden w-full text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-primary/40">
+                        <option value="">Cargando...</option>
+                    </select>
+                    <button onclick="ProjectDetailPage.confirmAddMember()" 
+                        class="w-full py-1.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                        Confirmar
+                    </button>
+                </div>` : ''}
+
+                <div class="space-y-2" id="team-member-list">
                     ${p.team.map((m, i) => `
-                        <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                        <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
                             <div class="w-10 h-10 rounded-full bg-cover bg-center border border-slate-200 dark:border-slate-700 flex-shrink-0"
                                 style="background-image: url('${m.avatar}')"></div>
-                            <div>
-                                <p class="font-semibold text-sm">${m.name}</p>
+                            <div class="flex-1 min-w-0">
+                                <p class="font-semibold text-sm truncate">${m.name}</p>
                                 <p class="text-xs text-slate-400">${i === 0 ? 'Líder de proyecto' : 'Miembro'}</p>
                             </div>
+                            ${AuthService.isAdmin() ? `
+                            <button onclick="ProjectDetailPage.removeMember('${m.id}')" title="Quitar del proyecto"
+                                class="opacity-0 group-hover:opacity-100 w-6 h-6 rounded flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all flex-shrink-0">
+                                <span class="material-symbols-outlined text-sm">close</span>
+                            </button>` : ''}
                         </div>
                     `).join('')}
                 </div>
             </div>
         </div>`;
+    },
+
+    toggleAddMember() {
+        const panel = document.getElementById('add-member-panel');
+        const btn   = document.getElementById('add-member-btn');
+        if (!panel) return;
+        const isHidden = panel.classList.toggle('hidden');
+        if (btn) btn.textContent = isHidden ? 'Agregar' : 'Cancelar';
+        if (!isHidden) {
+            // Reset
+            document.getElementById('add-member-mode').value = '';
+            document.getElementById('add-member-value').classList.add('hidden');
+        }
+    },
+
+    async onAddMemberModeChange() {
+        const mode = document.getElementById('add-member-mode').value;
+        const valSelect = document.getElementById('add-member-value');
+        if (!mode) { valSelect.classList.add('hidden'); return; }
+
+        valSelect.classList.remove('hidden');
+        const allUsers = await TeamService.fetchAll();
+        const project  = ProjectService.getById(this.projectId) || await ProjectService.fetchById(this.projectId);
+        const memberIds = new Set((project.team || []).map(m => m.id));
+
+        if (mode === 'team') {
+            const teams = [...new Set(allUsers.map(u => u.team))].sort();
+            valSelect.innerHTML = `<option value="">Seleccionar equipo...</option>` + 
+                teams.map(t => `<option value="team:${t}">${t}</option>`).join('');
+        } else {
+            const available = allUsers.filter(u => !memberIds.has(u.id));
+            valSelect.innerHTML = `<option value="">Seleccionar persona...</option>` + 
+                available.map(u => `<option value="user:${u.id}">${u.name} (${u.team})</option>`).join('');
+        }
+    },
+
+    async confirmAddMember() {
+        const val = document.getElementById('add-member-value').value;
+        if (!val) { Toast.error('Seleccioná un equipo o persona'); return; }
+
+        const allUsers = await TeamService.fetchAll();
+        let userIds = [];
+
+        if (val.startsWith('team:')) {
+            const teamName = val.replace('team:', '');
+            userIds = allUsers.filter(u => u.team === teamName).map(u => u.id);
+        } else {
+            userIds = [val.replace('user:', '')];
+        }
+
+        try {
+            await Promise.all(userIds.map(uid =>
+                ApiAdapter.post(`/api/projects/${this.projectId}/members`, { userId: uid })
+            ));
+            Toast.success('Miembros agregados al proyecto');
+            this.loadTab('general');
+        } catch(e) {
+            Toast.error(e.message || 'Error al agregar miembro');
+        }
+    },
+
+    async removeMember(userId) {
+        if (!confirm('\u00bfQuitar a este miembro del proyecto?')) return;
+        try {
+            await ApiAdapter.delete(`/api/projects/${this.projectId}/members/${userId}`);
+            Toast.success('Miembro quitado');
+            this.loadTab('general');
+        } catch(e) {
+            Toast.error(e.message || 'Error al quitar miembro');
+        }
     },
 
     async changeStatus(newStatus) {

@@ -183,6 +183,38 @@ router.patch('/:id', async (req, res, next) => {
     }
 });
 
+// ── POST /api/projects/:id/members ─────────────────────────────────
+// Add a user to a project
+router.post('/:id/members', adminOnly, async (req, res, next) => {
+    try {
+        const { userId } = req.body;
+        if (!userId) return res.status(400).json({ error: 'userId requerido' });
+
+        await prisma.projectMember.upsert({
+            where: { projectId_userId: { projectId: req.params.id, userId } },
+            create: { projectId: req.params.id, userId, role: 'member' },
+            update: {}
+        });
+
+        res.json({ success: true });
+    } catch (err) {
+        next(err);
+    }
+});
+
+// ── DELETE /api/projects/:id/members/:userId ────────────────────────
+// Remove a user from a project
+router.delete('/:id/members/:userId', adminOnly, async (req, res, next) => {
+    try {
+        await prisma.projectMember.deleteMany({
+            where: { projectId: req.params.id, userId: req.params.userId }
+        });
+        res.json({ success: true });
+    } catch (err) {
+        next(err);
+    }
+});
+
 // ── DELETE /api/projects/:id ────────────────────────────────────────
 router.delete('/:id', adminOnly, async (req, res, next) => {
     try {
