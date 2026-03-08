@@ -31,6 +31,8 @@
             font-family: 'Inter', sans-serif;
         }
     </style>
+    <!-- Include ApiAdapter -->
+    <script src="../js/utils/ApiAdapter.js"></script>
 </head>
 
 <body
@@ -107,17 +109,7 @@
             spinner.classList.remove('hidden');
 
             try {
-                const res = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-
-                const data = await res.json();
-
-                if (!res.ok) {
-                    throw new Error(data.error || 'Error al iniciar sesión');
-                }
+                const data = await ApiAdapter.post('/api/auth/login', { email, password });
 
                 // Store JWT token
                 localStorage.setItem('auth_token', data.token);
