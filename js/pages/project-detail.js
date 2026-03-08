@@ -5,11 +5,70 @@
 window.ProjectDetailPage = {
     projectId: null,
     activeTab: 'general',
+    socket: null,
 
     async init(projectId) {
         this.projectId = projectId;
         this.activeTab = 'general';
         await this.render();
+        this.initSocket();
+    },
+
+    initSocket() {
+        if (!window.io) return;
+        
+        if (this.socket) {
+            this.socket.disconnect();
+        }
+
+        this.socket = io(ApiAdapter.BASE_URL);
+
+        this.socket.on('connect', () => {
+            console.log('WS Frontend conectado');
+            this.socket.emit('join_project', this.projectId);
+        });
+
+        this.socket.on('new_message', (msg) => {
+            // If we are currently viewing the chat tab, append it in real time
+            if (this.activeTab === 'chat') {
+                this.appendMessageToDOM(msg);
+                this.scrollChat();
+            } else {
+                // Optionally: Update unread badge here
+                const chatBtn = document.getElementById('pdt-chat');
+                if (chatBtn) {
+                   // Visual indicator could be added
+                }
+            }
+        });
+    },
+
+    appendMessageToDOM(msg) {
+        const container = document.getElementById('chat-messages');
+        if (!container) return;
+
+        // Remove empty state if present
+        const emptyState = container.querySelector('.py-16');
+        if (emptyState) emptyState.remove();
+
+        const currentUser = AuthService.getUserName();
+        const isMe = msg.author === currentUser;
+        const time = new Date(msg.timestamp).toLocaleString('es-AR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+        
+        const msgHtml = `
+            <div class="flex ${isMe ? 'justify-end' : 'justify-start'}">
+                <div class="max-w-[70%]">
+                    <div class="${isMe
+                        ? 'bg-primary text-white rounded-2xl rounded-br-md'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-2xl rounded-bl-md'} px-4 py-3">
+                        ${!isMe ? `<p class="text-xs font-bold mb-1 text-primary">${msg.author}</p>` : ''}
+                        <p class="text-sm">${msg.text}</p>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1 ${isMe ? 'text-right' : ''}">${time}</p>
+                </div>
+            </div>`;
+            
+        container.insertAdjacentHTML('beforeend', msgHtml);
     },
 
     async render() {
