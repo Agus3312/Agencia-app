@@ -8,8 +8,8 @@
  *   const data = await ApiAdapter.post('/api/auth/login', { email, password });
  */
 const ApiAdapter = {
-    // Base URL — empty string means same origin (backend serves frontend)
-    BASE_URL: '',
+    // Base URL — points to deployed backend on Railway
+    BASE_URL: 'https://agencia-app-production.up.railway.app',
     TOKEN_KEY: 'auth_token',
 
     /**
