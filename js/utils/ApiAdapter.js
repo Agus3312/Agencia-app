@@ -1,146 +1,127 @@
-/**
- * ApiAdapter
- * HTTP client for the backend API.
- * Centralizes all fetch calls and handles JWT token injection.
- *
- * Usage:
- *   const projects = await ApiAdapter.get('/api/projects');
- *   const data = await ApiAdapter.post('/api/auth/login', { email, password });
- */
-const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1']);
+const FALLBACK_REMOTE_URL = 'https://agencia-app-production.up.railway.app';
+
+function resolveBaseUrl() {
+    const configuredBaseUrl =
+        window.__API_BASE_URL__ ||
+        document.querySelector('meta[name="api-base-url"]')?.content;
+
+    if (configuredBaseUrl) {
+        return configuredBaseUrl.replace(/\/$/, '');
+    }
+
+    if (window.location.protocol === 'file:') {
+        return 'http://localhost:3001';
+    }
+
+    if (LOCAL_HOSTS.has(window.location.hostname)) {
+        return `http://${window.location.hostname}:3001`;
+    }
+
+    if (window.location.origin && window.location.origin !== 'null') {
+        return window.location.origin.replace(/\/$/, '');
+    }
+
+    return FALLBACK_REMOTE_URL;
+}
+
+function clearStoredAuthUser() {
+    if (window.StorageAdapter?.remove) {
+        window.StorageAdapter.remove('auth_user');
+        return;
+    }
+
+    try {
+        window.localStorage.removeItem('auth_user');
+    } catch (error) {
+        console.warn('Unable to clear auth_user from localStorage', error);
+    }
+}
+
+function getLoginPath() {
+    return window.location.pathname.includes('/pages/') ? 'login.html' : 'pages/login.html';
+}
 
 const ApiAdapter = {
-    // Base URL — points to local backend during development, or Railway in production
-    BASE_URL: isLocalhost 
-        ? `http://${window.location.hostname}:3001`
-        : 'https://agencia-app-production.up.railway.app', // <-- CAMBIAR POR LA URL QUE TE DE RAILWAY
-    
-    TOKEN_KEY: 'auth_token',
+    BASE_URL: resolveBaseUrl(),
+
+    // [CAMBIO] Problema 3: Ya no se usa localStorage para el token JWT
     _cache: {},
 
-    clearCache() {
-        this._cache = {};
-    },
+    clearCache() { this._cache = {}; },
 
-    /**
-     * Get stored JWT token
-     */
-    getToken() {
-        return localStorage.getItem(this.TOKEN_KEY);
-    },
-
-    /**
-     * Store JWT token
-     */
-    setToken(token) {
-        localStorage.setItem(this.TOKEN_KEY, token);
-    },
-
-    /**
-     * Remove JWT token
-     */
-    removeToken() {
-        localStorage.removeItem(this.TOKEN_KEY);
-    },
-
-    /**
-     * Build fetch headers with auth token
-     */
     _headers() {
-        const h = { 'Content-Type': 'application/json' };
-        const token = this.getToken();
-        if (token) h['Authorization'] = `Bearer ${token}`;
-        return h;
+        // [CAMBIO] Problema 3: Removido el setting del header Authorization. Ahora viaja via Cookie HttpOnly.
+        return { 'Content-Type': 'application/json' };
     },
 
-    /**
-     * Handle response: parse JSON, handle errors
-     */
-    async _handleResponse(res) {
-        if (res.status === 401) {
-            // Token expired or invalid — logout
-            this.removeToken();
-            StorageAdapter.remove('auth_user');
-            window.location.href = 'pages/login.html';
-            throw new Error('Sesión expirada');
+    // [CAMBIO] Problema 4: Wrapper interno para manejar excepciones puras de red en fetch
+    async _fetchWithHandling(url, options) {
+        // [CAMBIO] Problema 3: credentials 'include' para enviar cookies automatically
+        options.credentials = 'include';
+        try {
+            return await fetch(url, options);
+        } catch (error) {
+            console.error('Fetch network error:', error);
+            const msg = this.BASE_URL.includes('localhost:3001')
+                ? 'No se pudo conectar al backend local en http://localhost:3001. Inicia el servidor e intenta de nuevo.'
+                : 'No se pudo conectar al servidor. Verifica tu conexion e intenta de nuevo.';
+            if (window.Toast && Toast.error) {
+                Toast.error(msg);
+            } else {
+                console.error(msg);
+            }
+            throw new Error('Network error');
+        }
+    },
+
+    async _handleResponse(res, path) {
+        const isLoginRequest = path === '/api/auth/login';
+
+        if (res.status === 401 && !isLoginRequest) {
+            clearStoredAuthUser();
+            window.location.href = getLoginPath();
+            throw new Error('Sesion expirada');
         }
 
-        const data = await res.json();
+        const contentType = res.headers.get('content-type') || '';
+        const data = contentType.includes('application/json') ? await res.json() : {};
 
-        if (!res.ok) {
-            throw new Error(data.error || `Error ${res.status}`);
-        }
-
+        if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
         return data;
     },
 
-    /**
-     * GET request
-     */
+    // [CAMBIO] Problema 2: forceRefresh argument passthru y Problema 4: Usar _fetchWithHandling
     async get(path, forceRefresh = false) {
-        if (!forceRefresh && this._cache[path]) {
-            return this._cache[path];
-        }
-
-        const res = await fetch(this.BASE_URL + path, {
-            method: 'GET',
-            headers: this._headers()
-        });
-        
-        const data = await this._handleResponse(res);
-        this._cache[path] = data; // Guardar en caché
+        if (!forceRefresh && this._cache[path]) return this._cache[path];
+        const res = await this._fetchWithHandling(this.BASE_URL + path, { method: 'GET', headers: this._headers() });
+        const data = await this._handleResponse(res, path);
+        this._cache[path] = data;
         return data;
     },
 
-    /**
-     * POST request
-     */
     async post(path, body) {
-        const res = await fetch(this.BASE_URL + path, {
-            method: 'POST',
-            headers: this._headers(),
-            body: JSON.stringify(body)
-        });
-        this.clearCache(); // Invalidar caché en mutaciones
-        return this._handleResponse(res);
+        const res = await this._fetchWithHandling(this.BASE_URL + path, { method: 'POST', headers: this._headers(), body: JSON.stringify(body) });
+        this.clearCache();
+        return this._handleResponse(res, path);
     },
 
-    /**
-     * PUT request
-     */
     async put(path, body) {
-        const res = await fetch(this.BASE_URL + path, {
-            method: 'PUT',
-            headers: this._headers(),
-            body: JSON.stringify(body)
-        });
-        this.clearCache(); // Invalidar caché
-        return this._handleResponse(res);
+        const res = await this._fetchWithHandling(this.BASE_URL + path, { method: 'PUT', headers: this._headers(), body: JSON.stringify(body) });
+        this.clearCache();
+        return this._handleResponse(res, path);
     },
 
-    /**
-     * PATCH request
-     */
     async patch(path, body) {
-        const res = await fetch(this.BASE_URL + path, {
-            method: 'PATCH',
-            headers: this._headers(),
-            body: JSON.stringify(body)
-        });
-        this.clearCache(); // Invalidar caché
-        return this._handleResponse(res);
+        const res = await this._fetchWithHandling(this.BASE_URL + path, { method: 'PATCH', headers: this._headers(), body: JSON.stringify(body) });
+        this.clearCache();
+        return this._handleResponse(res, path);
     },
 
-    /**
-     * DELETE request
-     */
     async delete(path) {
-        const res = await fetch(this.BASE_URL + path, {
-            method: 'DELETE',
-            headers: this._headers()
-        });
-        this.clearCache(); // Invalidar caché
-        return this._handleResponse(res);
+        const res = await this._fetchWithHandling(this.BASE_URL + path, { method: 'DELETE', headers: this._headers() });
+        this.clearCache();
+        return this._handleResponse(res, path);
     }
 };
 

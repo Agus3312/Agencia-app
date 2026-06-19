@@ -1,82 +1,29 @@
-/**
- * AuthService
- * Centralized authentication & authorization.
- * Connected to backend API via ApiAdapter.
- *
- * JWT token stored in localStorage as 'auth_token'.
- * User data cached in localStorage as 'auth_user' for quick access.
- */
 const AuthService = {
     STORAGE_KEY: 'auth_user',
 
-    /**
-     * Get current logged-in user object (from cache)
-     */
-    getUser() {
-        return StorageAdapter.get(this.STORAGE_KEY, {});
-    },
+    getUser() { return StorageAdapter.get(this.STORAGE_KEY, {}); },
+    getUserName() { const u = this.getUser(); return u.name || u.email || 'Usuario'; },
 
-    /**
-     * Get user's display name
-     */
-    getUserName() {
-        const user = this.getUser();
-        return user.name || user.email || 'Usuario';
-    },
+    // [CAMBIO] Problema 3: Para saber si está logueado ya no verificamos getToken, ahora miramos si hay user data.
+    isAuthenticated() { return !!(this.getUser().id); },
+    isAdmin() { const r = this.getUser().role; return r && r.toLowerCase() === 'admin'; },
 
-    /**
-     * Check if user is authenticated (has valid token + cached user)
-     */
-    isAuthenticated() {
-        return !!(ApiAdapter.getToken() && this.getUser().id);
-    },
-
-    /**
-     * Check if user has admin privileges
-     */
-    isAdmin() {
-        const user = this.getUser();
-        return user.role === 'Admin';
-    },
-
-    /**
-     * Log in via API — sends credentials, stores JWT + user data
-     * @param {string} email
-     * @param {string} password
-     * @returns {Promise<{token, user}>}
-     */
     async login(email, password) {
         const data = await ApiAdapter.post('/api/auth/login', { email, password });
-
-        // Store JWT token
-        ApiAdapter.setToken(data.token);
-
-        // Cache user data for quick access
+        // [CAMBIO] Problema 3: No setear token en LocalStorage
         StorageAdapter.set(this.STORAGE_KEY, data.user);
-
         EventBus.emit('auth:login', data.user);
         return data;
     },
 
-    /**
-     * Register via API
-     * @returns {Promise<{token, user}>}
-     */
     async register(name, email, password, role, team) {
-        const data = await ApiAdapter.post('/api/auth/register', {
-            name, email, password, role, team
-        });
-
-        ApiAdapter.setToken(data.token);
+        const data = await ApiAdapter.post('/api/auth/register', { name, email, password, role, team });
+        // [CAMBIO] Problema 3: No setear token en LocalStorage
         StorageAdapter.set(this.STORAGE_KEY, data.user);
-
         EventBus.emit('auth:login', data.user);
         return data;
     },
 
-    /**
-     * Refresh user data from API
-     */
     async refreshUser() {
         try {
             const user = await ApiAdapter.get('/api/auth/me');
@@ -87,19 +34,18 @@ const AuthService = {
         }
     },
 
-    /**
-     * Log out — clears token + user data and redirects
-     */
-    logout() {
-        ApiAdapter.removeToken();
+    // [CAMBIO] Problema 3: Llamar al endpoint /logout para que limpie la cookie del backend
+    async logout() {
+        try {
+            await ApiAdapter.post('/api/auth/logout', {});
+        } catch (e) {
+            console.error('Logout error:', e);
+        }
         StorageAdapter.remove(this.STORAGE_KEY);
         EventBus.emit('auth:logout');
         window.location.href = 'pages/login.html';
     },
 
-    /**
-     * Get user avatar URL
-     */
     getAvatar() {
         const user = this.getUser();
         return user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'U')}&background=1d3faf&color=fff`;

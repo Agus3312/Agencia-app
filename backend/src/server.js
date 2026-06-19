@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 
 const { Server } = require('socket.io');
 const http = require('http');
@@ -39,12 +40,13 @@ const PORT = process.env.PORT || 3001;
 
 // ── Middleware ───────────────────────────────────────────────────────
 app.use(cors({
-    origin: function(origin, callback) {
+    origin: function (origin, callback) {
         // Permitir cualquier origen (para desarrollo/pruebas)
         callback(null, true);
     },
     credentials: true
 }));
+app.use(cookieParser());
 app.use(express.json());
 
 // ── Serve frontend static files ─────────────────────────────────────
@@ -64,8 +66,8 @@ app.use('/api/notifications', require('./routes/notifications'));
 
 // ── Health check ────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
-    res.json({ 
-        status: 'ok', 
+    res.json({
+        status: 'ok',
         timestamp: new Date().toISOString(),
         hasDbUrl: !!process.env.DATABASE_URL,
         envKeys: Object.keys(process.env)

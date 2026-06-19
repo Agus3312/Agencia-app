@@ -5,7 +5,8 @@
 
 const App = {
     version: '1.0.0',
-    debug: true,
+    // [CAMBIO] Problema 5: Configuración dinámica de debug según el hostname
+    debug: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1',
 
     init() {
         this.log('Initializing Application...');
